@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: omely-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn youtube_transcriber:app
+    plan: free
