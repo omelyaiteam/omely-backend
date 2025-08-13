@@ -1,10 +1,12 @@
 [build]
   publish = "."
-  command = "echo 'Static site - no build needed'"
+  command = ""
 
 [build.environment]
   NODE_VERSION = "18"
   PYTHON_ENABLED = "false"
+  NPM_FLAGS = "--ignore-scripts --no-optional --no-audit --no-fund"
+  SKIP_DEPENDENCY_CACHE = "true"
 
 [[redirects]]
   from = "/*"
