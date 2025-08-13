@@ -7,6 +7,9 @@
 !netlify.toml
 !.netlifyignore
 
+# Ignore backend folder completely
+backend/
+
 # Explicitly ignore all Python files
 *.py
 *.pyc
