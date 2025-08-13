@@ -1,0 +1,37 @@
+# Ignore all Python files for Netlify deployment
+*.py
+*.pyc
+__pycache__/
+*.egg-info/
+*.egg
+requirements.txt
+setup.py
+Pipfile
+Pipfile.lock
+poetry.lock
+pyproject.toml
+
+# Backend documentation
+*BACKEND*.md
+*backend*.md
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp

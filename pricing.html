@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMELY.AI - Pricing Plans</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: white;
+            line-height: 1.6;
+            /* Optimisation des performances */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* Prevent background scroll when menu open */
+        body.no-scroll { 
+            overflow: hidden; 
+        }
+
+        /* Background Animation - optimisé */
+        .bg-animation {
+            position: fixed;
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0;
+            animation: bgFadeIn 2s ease-out forwards;
+            /* Optimisation GPU */
+            will-change: opacity;
+            transform: translateZ(0);
+        }
+        
+        @keyframes bgFadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Star Animation - Snow Effect - optimisé */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+            animation: starFloat 15s linear infinite;
+            /* Optimisation GPU */
+            will-change: transform;
+            transform: translateZ(0);
+        }
+        
+        .star:nth-child(1) { left: 8%; top: -10vh; animation-delay: 0s; animation-duration: 12s; }
+        .star:nth-child(2) { left: 22%; top: -15vh; animation-delay: 0.2s; animation-duration: 14s; }
+        .star:nth-child(3) { left: 38%; top: -8vh; animation-delay: 0.4s; animation-duration: 16s; }
+        .star:nth-child(4) { left: 52%; top: -12vh; animation-delay: 0.6s; animation-duration: 13s; }
+        .star:nth-child(5) { left: 68%; top: -6vh; animation-delay: 0.8s; animation-duration: 15s; }
+        .star:nth-child(6) { left: 82%; top: -14vh; animation-delay: 1s; animation-duration: 17s; }
+        .star:nth-child(7) { left: 15%; top: -20vh; animation-delay: 1.2s; animation-duration: 11s; }
+        .star:nth-child(8) { left: 45%; top: -18vh; animation-delay: 1.4s; animation-duration: 18s; }
+        .star:nth-child(9) { left: 75%; top: -16vh; animation-delay: 1.6s; animation-duration: 14s; }
+        .star:nth-child(10) { left: 90%; top: -22vh; animation-delay: 1.8s; animation-duration: 19s; }
+        
+        @keyframes starFloat {
+            0% {
+                transform: translateY(0vh) translateX(0px) scale(0.8);
+                opacity: 0.7;
+            }
+            20% {
+                opacity: 1;
+                transform: translateY(20vh) translateX(8px) scale(1);
+            }
+            40% {
+                opacity: 1;
+                transform: translateY(40vh) translateX(-6px) scale(1.1);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(60vh) translateX(12px) scale(1);
+            }
+            80% {
+                opacity: 0.8;
+                transform: translateY(80vh) translateX(-8px) scale(0.9);
+            }
+            100% {
+                transform: translateY(110vh) translateX(0px) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        .neural-network {
+            position: absolute; 
+            width: 100%; 
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 80%, rgba(59,130,246,0.06) 0%, transparent 50%);
+        }
+
+        /* Header - optimisé */
+        .header {
+            padding: 20px 0;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%;
+            backdrop-filter: blur(20px);
+            background: rgba(10,10,15,0.85);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            z-index: 1200;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: headerSlideDown 1s ease-out 0.1s forwards;
+            /* Optimisation GPU */
+            will-change: backdrop-filter, opacity, transform;
+            transform: translateZ(0);
+        }
+        
+        @keyframes headerSlideDown {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-container {
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 0 40px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+
+        .logo { 
+            font-size: 28px; 
+            font-weight: 800;
+            background: linear-gradient(45deg,#6366f1,#8b5cf6,#06b6d4);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: scale(0.8);
+            animation: logoPopIn 1s ease-out 0.2s forwards;
+            /* Optimisation GPU */
+            will-change: transform;
+            transform: translateZ(0);
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+        
+        @keyframes logoPopIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .nav-links { 
+            display: flex; 
+            gap: 40px; 
+            list-style: none; 
+        }
+
+        .nav-links a { 
+            color: rgba(255,255,255,0.85); 
+            text-decoration: none; 
+            font-weight: 500; 
+            transition: color .25s; 
+            opacity: 0;
+            transform: translateY(-10px);
+            animation: navLinkFadeIn 0.8s ease-out forwards;
+        }
+        
+        .nav-links li:nth-child(1) a { animation-delay: 0.3s; }
+        .nav-links li:nth-child(2) a { animation-delay: 0.4s; }
+        .nav-links li:nth-child(3) a { animation-delay: 0.5s; }
+        .nav-links li:nth-child(4) a { animation-delay: 0.6s; }
+        
+        @keyframes navLinkFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-links a:hover { 
+            color: #6366f1; 
+        }
+
+        .header-buttons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-login {
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            font-size: 1rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .header-login:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Menu Toggle - Hamburger moderne */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1400;
+            position: relative;
+        }
+
+        .hamburger-line {
+            width: 25px;
+            height: 2px;
+            background: #fff;
+            margin: 3px 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-radius: 2px;
+        }
+
+        /* Animation hamburger -> X */
+        .menu-toggle.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .menu-toggle.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Menu overlay */
+        .menu-overlay {
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            opacity: 0; 
+            visibility: hidden; 
+            transition: all 0.4s ease;
+            z-index: 1250;
+        }
+
+        .menu-overlay.active { 
+            opacity: 1; 
+            visibility: visible; 
+        }
+
+        /* Mobile menu - Animation slide moderne */
+        .mobile-menu {
+            position: fixed; 
+            top: 0; 
+            right: 0;
+            width: 320px; 
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(10,10,15,0.95), rgba(20,20,30,0.95));
+            backdrop-filter: blur(25px);
+            padding: 100px 40px 40px;
+            text-align: left;
+            box-shadow: -15px 0 50px rgba(0,0,0,0.5);
+            border-left: 1px solid rgba(99,102,241,0.2);
+            transform: translateX(100%); 
+            opacity: 0; 
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1300;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0); 
+            opacity: 1; 
+            visibility: visible;
+        }
+
+        /* Close button inside mobile menu */
+        .close-menu {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(-8px);
+            z-index: 1401;
+        }
+
+        .close-menu:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .close-menu:focus {
+            outline: 2px solid rgba(255, 255, 255, 0.35);
+            outline-offset: 2px;
+        }
+
+        .close-menu .close-line {
+            position: absolute;
+            width: 18px;
+            height: 2px;
+            background: #fff;
+            border-radius: 2px;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .close-menu .close-line:first-child { transform: rotate(45deg); }
+        .close-menu .close-line:last-child { transform: rotate(-45deg); }
+
+        .mobile-menu.active .close-menu {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.08s;
+        }
+
+        .mobile-menu ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 40px 0; 
+        }
+
+        .mobile-menu ul li {
+            margin: 25px 0; 
+            opacity: 0; 
+            transform: translateX(30px);
+            transition: all 0.4s ease;
+        }
+
+        /* Animation séquentielle des items */
+        .mobile-menu.active ul li { 
+            opacity: 1; 
+            transform: translateX(0); 
+        }
+
+        .mobile-menu.active ul li:nth-child(1) { 
+            transition-delay: 0.1s; 
+        }
+
+        .mobile-menu.active ul li:nth-child(2) { 
+            transition-delay: 0.2s; 
+        }
+
+        .mobile-menu.active ul li:nth-child(3) { 
+            transition-delay: 0.3s; 
+        }
+
+        .mobile-menu ul li a {
+            color: rgba(255,255,255,0.9); 
+            text-decoration: none; 
+            font-size: 1.4rem; 
+            font-weight: 600;
+            padding: 15px 20px; 
+            display: block; 
+            border-radius: 12px; 
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Effet hover moderne */
+        .mobile-menu ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15));
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .mobile-menu ul li a:hover::before {
+            left: 0;
+        }
+
+        .mobile-menu ul li a:hover { 
+            color: #6366f1; 
+            background: rgba(99,102,241,0.08);
+            transform: translateX(8px);
+        }
+
+        /* CTA dans le menu mobile */
+        .mobile-cta {
+            margin-top: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .mobile-menu.active .mobile-cta {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.4s;
+        }
+
+        .mobile-cta .btn-secondary {
+            display: block;
+            width: 100%;
+            padding: 14px 25px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            font-size: 1rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .mobile-cta .btn-secondary:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .mobile-cta .btn-primary {
+            display: block;
+            width: 100%;
+            padding: 16px 25px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            box-shadow: 0 10px 25px rgba(99,102,241,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-cta .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(99,102,241,0.4);
+        }
+
+        /* Hero Section */
+        .hero { 
+            padding: 180px 40px 100px; 
+            text-align: center; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            opacity: 0;
+            transform: translateY(30px);
+            animation: heroFadeIn 1s ease-out 0.2s forwards;
+            position: relative;
+            z-index: 10;
+        }
+        
+        @keyframes heroFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(3.5rem, 5.5vw, 5rem); 
+            font-weight: 900; 
+            margin-bottom: 25px;
+            color: #ffffff;
+            text-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.3),
+                0 0 40px rgba(255, 255, 255, 0.2),
+                0 0 60px rgba(255, 255, 255, 0.1);
+            letter-spacing: -0.02em;
+            position: relative;
+            animation: titleSlideIn 1.2s ease-out 0.4s forwards;
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        
+        .hero h1::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6, #06b6d4);
+            border-radius: 8px;
+            z-index: -1;
+            opacity: 0.1;
+            filter: blur(8px);
+        }
+        
+        @keyframes titleSlideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+
+
+        .hero p { 
+            font-size: 1.3rem; 
+            color: rgba(255,255,255,0.85); 
+            max-width: 650px; 
+            margin: 0 auto 40px; 
+            line-height: 1.7; 
+            opacity: 0;
+            transform: translateX(50px);
+            animation: descriptionSlideIn 1.2s ease-out 0.6s forwards;
+        }
+        
+        @keyframes descriptionSlideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Pricing Cards Section */
+        .pricing-section {
+            padding: 100px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: sectionFadeIn 1s ease-out 0.8s forwards;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .pricing-section h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(45deg, #00d4ff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: sectionTitleSlideUp 1s ease-out 0.9s forwards;
+        }
+        
+        @keyframes sectionFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes sectionTitleSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 40px 30px;
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            opacity: 0;
+            transform: translateY(60px) scale(0.9) rotateX(15deg);
+            animation: cardSlideIn 1.2s ease-out forwards;
+            /* Optimisation GPU */
+            will-change: transform, backdrop-filter, box-shadow, border-color;
+            transform: translateZ(0);
+        }
+        
+        .pricing-card:nth-child(1) { animation-delay: 0.3s; }
+        .pricing-card:nth-child(2) { animation-delay: 0.5s; }
+        .pricing-card:nth-child(3) { animation-delay: 0.7s; }
+        
+        @keyframes cardSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(60px) scale(0.9) rotateX(15deg);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translateY(-15px) scale(1.08) rotateX(5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotateX(0deg);
+            }
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .pricing-card:hover::before {
+            left: 100%;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 30px 60px rgba(0, 212, 255, 0.3);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        .pricing-card.selected {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 30px 60px rgba(0, 212, 255, 0.4);
+            border-color: rgba(0, 212, 255, 0.8);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .pricing-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            opacity: 0;
+            transform: scale(0) rotate(180deg);
+            animation: iconPopIn 0.8s ease-out forwards;
+            /* Optimisation GPU */
+            will-change: transform, opacity;
+            transform: translateZ(0);
+        }
+        
+        .pricing-card:nth-child(1) .pricing-icon { animation-delay: 0.8s; }
+        .pricing-card:nth-child(2) .pricing-icon { animation-delay: 1.0s; }
+        .pricing-card:nth-child(3) .pricing-icon { animation-delay: 1.2s; }
+        
+        @keyframes iconPopIn {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(180deg);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2) rotate(90deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .pricing-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #fff;
+            font-weight: 700;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: textSlideUp 0.8s ease-out forwards;
+        }
+        
+        .pricing-card:nth-child(1) h3 { animation-delay: 1.0s; }
+        .pricing-card:nth-child(2) h3 { animation-delay: 1.2s; }
+        .pricing-card:nth-child(3) h3 { animation-delay: 1.4s; }
+        
+        @keyframes textSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.3),
+                0 0 40px rgba(255, 255, 255, 0.2),
+                0 0 60px rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: pricePopIn 0.8s ease-out forwards;
+        }
+        
+        .pricing-card:nth-child(1) .pricing-price { animation-delay: 1.2s; }
+        .pricing-card:nth-child(2) .pricing-price { animation-delay: 1.4s; }
+        .pricing-card:nth-child(3) .pricing-price { animation-delay: 1.6s; }
+        
+        @keyframes pricePopIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .pricing-period {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+
+        .pricing-features li {
+            padding: 8px 0;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: featureSlideIn 0.6s ease-out forwards;
+        }
+        
+        .pricing-card:nth-child(1) .pricing-features li:nth-child(1) { animation-delay: 1.4s; }
+        .pricing-card:nth-child(1) .pricing-features li:nth-child(2) { animation-delay: 1.5s; }
+        .pricing-card:nth-child(1) .pricing-features li:nth-child(3) { animation-delay: 1.6s; }
+        
+        .pricing-card:nth-child(2) .pricing-features li:nth-child(1) { animation-delay: 1.6s; }
+        .pricing-card:nth-child(2) .pricing-features li:nth-child(2) { animation-delay: 1.7s; }
+        .pricing-card:nth-child(2) .pricing-features li:nth-child(3) { animation-delay: 1.8s; }
+        
+        .pricing-card:nth-child(3) .pricing-features li:nth-child(1) { animation-delay: 1.8s; }
+        .pricing-card:nth-child(3) .pricing-features li:nth-child(2) { animation-delay: 1.9s; }
+        .pricing-card:nth-child(3) .pricing-features li:nth-child(3) { animation-delay: 2.0s; }
+        
+        @keyframes featureSlideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: #00d4ff;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .coming-soon-badge {
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 20px;
+            display: inline-block;
+            animation: pulse 2s ease-in-out infinite, badgeFadeIn 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .pricing-card:nth-child(1) .coming-soon-badge { animation-delay: 1.7s, 1.7s; }
+        .pricing-card:nth-child(2) .coming-soon-badge { animation-delay: 1.9s, 1.9s; }
+        .pricing-card:nth-child(3) .coming-soon-badge { animation-delay: 2.1s, 2.1s; }
+        
+        @keyframes badgeFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pricing-cta {
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: ctaSlideUp 0.8s ease-out forwards;
+            /* Optimisation GPU */
+            will-change: transform, box-shadow;
+            transform: translateZ(0);
+        }
+        
+        .pricing-card:nth-child(1) .pricing-cta { animation-delay: 1.8s; }
+        .pricing-card:nth-child(2) .pricing-cta { animation-delay: 2.0s; }
+        .pricing-card:nth-child(3) .pricing-cta { animation-delay: 2.2s; }
+        
+        @keyframes ctaSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pricing-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .pricing-cta:hover::before {
+            left: 100%;
+        }
+
+        .pricing-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .pricing-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { 
+                display: none; 
+            }
+
+            .menu-toggle { 
+                display: flex; 
+            }
+
+            .nav-container {
+                padding: 0 20px;
+            }
+
+            /* Mobile menu prend moins de largeur sur très petits écrans */
+            .mobile-menu {
+                width: 100%;
+                padding: 100px 30px 40px;
+            }
+
+            .hero { 
+                padding: 140px 20px 80px; 
+            }
+
+            .hero h1 { 
+                font-size: clamp(2.5rem, 5vw, 3.5rem); 
+            }
+
+            .pricing-section {
+                padding: 60px 20px;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .pricing-card {
+                min-height: auto;
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-menu {
+                padding: 90px 20px 30px;
+            }
+
+            .mobile-menu ul li a {
+                font-size: 1.2rem;
+                padding: 12px 16px;
+            }
+        }
+
+        /* Amélioration accessibilité */
+        .menu-toggle:focus {
+            outline: 2px solid rgba(99,102,241,0.5);
+            outline-offset: 2px;
+        }
+
+        a {
+            cursor: pointer; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+        
+        /* Scroll behavior & snapping */
+        html { scroll-behavior: smooth; }
+        body { scroll-snap-type: y proximity; }
+        section { scroll-snap-align: start; scroll-margin-top: 90px; }
+        @media (max-width: 768px) { section { scroll-margin-top: 70px; } }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="neural-network"></div>
+    </div>
+    
+    <!-- Stars Container -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+    
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">OMELY.AI</div>
+
+            <!-- Hamburger menu moderne -->
+            <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Menu">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </button>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#features">Solutions</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="header-buttons">
+                <a href="login.html" class="header-login">Login</a>
+                <a href="app.html" class="header-cta glass">Get Started →</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Overlay (fond sombre quand menu ouvert) -->
+    <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+
+    <!-- Mobile menu -->
+    <nav class="mobile-menu" id="mobileMenu" aria-hidden="true" role="dialog" aria-label="Menu">
+        <button class="close-menu" id="closeMenu" aria-label="Fermer le menu">
+            <span class="close-line"></span>
+            <span class="close-line"></span>
+        </button>
+        <ul>
+            <li><a href="index.html" data-close>Home</a></li>
+            <li><a href="index.html#features" data-close>Solutions</a></li>
+            <li><a href="pricing.html" data-close>Pricing</a></li>
+            <li><a href="about.html" data-close>About</a></li>
+            <li><a href="contact.html" data-close>Contact</a></li>
+        </ul>
+        
+        <!-- CTA dans le menu mobile -->
+        <div class="mobile-cta">
+            <a href="login.html" class="btn-secondary">Login</a>
+            <a href="app.html" class="btn-primary">Get Started →</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="top">
+        <h1>Choose Your<br />Learning Path</h1>
+        <p>Select the perfect plan to accelerate your growth and unlock your full potential with AI-powered learning.</p>
+    </section>
+
+    <!-- Pricing Cards Section -->
+    <section class="pricing-section">
+        <h2>Choose Your Plan</h2>
+        <div class="pricing-grid">
+            <!-- Starter Plan -->
+            <div class="pricing-card" onclick="selectPlan(this)">
+                <div>
+                    <div class="pricing-icon">🚀</div>
+                    <h3>Starter</h3>
+                    <div class="pricing-price">$19</div>
+                    <div class="pricing-period">per month</div>
+                    <ul class="pricing-features">
+                        <li>Basic AI Learning Path</li>
+                        <li>5 Core Modules</li>
+                        <li>Progress Tracking</li>
+                        <li>Community Access</li>
+                        <li>Email Support</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="coming-soon-badge">Coming Soon</div>
+                    <button class="pricing-cta">Get Started</button>
+                </div>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="pricing-card" onclick="selectPlan(this)">
+                <div>
+                    <div class="pricing-icon">⚡</div>
+                    <h3>Pro</h3>
+                    <div class="pricing-price">$49</div>
+                    <div class="pricing-period">per month</div>
+                    <ul class="pricing-features">
+                        <li>Advanced AI Learning</li>
+                        <li>Unlimited Modules</li>
+                        <li>Personalized Coaching</li>
+                        <li>Priority Support</li>
+                        <li>Advanced Analytics</li>
+                        <li>Custom Learning Paths</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="coming-soon-badge">Coming Soon</div>
+                    <button class="pricing-cta">Get Started</button>
+                </div>
+            </div>
+
+            <!-- Enterprise Plan -->
+            <div class="pricing-card" onclick="selectPlan(this)">
+                <div>
+                    <div class="pricing-icon">🏢</div>
+                    <h3>Enterprise</h3>
+                    <div class="pricing-price">$199</div>
+                    <div class="pricing-period">per month</div>
+                    <ul class="pricing-features">
+                        <li>Full AI Suite Access</li>
+                        <li>Team Management</li>
+                        <li>Custom Integrations</li>
+                        <li>Dedicated Support</li>
+                        <li>White-label Options</li>
+                        <li>Advanced Security</li>
+                        <li>API Access</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="coming-soon-badge">Coming Soon</div>
+                    <button class="pricing-cta">Contact Sales</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<script>
+    // Script pour le menu mobile moderne
+    (function () {
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const body = document.body;
+        const closeMenuBtn = document.getElementById('closeMenu');
+
+        function openMenu() {
+            // Ajouter les classes actives
+            menuToggle.classList.add('active');
+            mobileMenu.classList.add('active');
+            menuOverlay.classList.add('active');
+            body.classList.add('no-scroll');
+            
+            // Accessibilité
+            menuToggle.setAttribute('aria-expanded', 'true');
+            mobileMenu.setAttribute('aria-hidden', 'false');
+            menuOverlay.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeMenu() {
+            // Retirer les classes actives
+            menuToggle.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+            body.classList.remove('no-scroll');
+            
+            // Accessibilité
+            menuToggle.setAttribute('aria-expanded', 'false');
+            mobileMenu.setAttribute('aria-hidden', 'true');
+            menuOverlay.setAttribute('aria-hidden', 'true');
+        }
+
+        function toggleMenu() {
+            if (mobileMenu.classList.contains('active')) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        }
+
+        // Événements
+        menuToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            toggleMenu();
+        });
+
+        // Fermer en cliquant sur l'overlay
+        menuOverlay.addEventListener('click', function () {
+            closeMenu();
+        });
+
+        // Bouton de fermeture interne
+        if (closeMenuBtn) {
+            closeMenuBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                closeMenu();
+            });
+        }
+
+        // Fermer avec Échap
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                closeMenu();
+            }
+        });
+
+        // Fermer en cliquant sur un lien du menu
+        document.querySelectorAll('#mobileMenu [data-close]').forEach(link => {
+            link.addEventListener('click', function () {
+                // Petit délai pour permettre la navigation
+                setTimeout(closeMenu, 100);
+            });
+        });
+
+        // Fermer si clic en dehors du menu
+        document.addEventListener('click', function (e) {
+            if (
+                !mobileMenu.contains(e.target) && 
+                !menuToggle.contains(e.target) && 
+                mobileMenu.classList.contains('active')
+            ) {
+                closeMenu();
+            }
+        });
+
+        // Amélioration pour le scroll sur mobile
+        let startY = 0;
+        document.addEventListener('touchstart', function(e) {
+            startY = e.touches[0].pageY;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', function(e) {
+            if (body.classList.contains('no-scroll')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+    })();
+
+    // Pricing Card Selection - optimisé
+    function selectPlan(card) {
+        // Remove selected class from all cards
+        document.querySelectorAll('.pricing-card').forEach(c => {
+            c.classList.remove('selected');
+        });
+        
+        // Add selected class to clicked card
+        card.classList.add('selected');
+        
+        // Show notification avec délai optimisé
+        setTimeout(() => {
+            alert('This plan will be available soon! 🚀');
+        }, 300);
+    }
+
+    // Optimisations de performance
+    document.addEventListener('DOMContentLoaded', function() {
+        // Lazy loading des animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        // Optimisation du scroll
+        let ticking = false;
+        function updateScroll() {
+            ticking = false;
+        }
+
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(updateScroll);
+                ticking = true;
+            }
+        }
+
+        // Throttle scroll events
+        window.addEventListener('scroll', requestTick, { passive: true });
+
+        // Optimisation des animations
+        const animatedElements = document.querySelectorAll('.pricing-card, .pricing-icon, .pricing-cta');
+        animatedElements.forEach(el => {
+            el.style.willChange = 'transform, opacity';
+        });
+    });
+</script>
+
+</body>
+</html>

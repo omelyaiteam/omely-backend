@@ -1,0 +1,39 @@
+# Python files (backend - not needed for frontend deployment)
+*.py
+*.pyc
+__pycache__/
+*.egg-info/
+*.egg
+requirements.txt
+setup.py
+Pipfile
+Pipfile.lock
+poetry.lock
+pyproject.toml
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Backend documentation
+*BACKEND*.md
+*backend*.md

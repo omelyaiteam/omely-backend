@@ -1,0 +1,2566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OMELY.AI Chat - Start a conversation with your AI learning assistant">
+    <title>OMELY.AI - AI Chat Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            height: 100vh;
+        }
+
+        /* Prevent background scroll when menu open */
+        body.no-scroll { 
+            overflow: hidden; 
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .neural-network {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 80%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
+        }
+
+        /* Neural Lines Animation */
+        .neural-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.08;
+        }
+
+        .line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, #6366f1, transparent);
+            height: 1px;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .line:nth-child(1) { top: 20%; left: -50px; width: 300px; animation-delay: 0s; }
+        .line:nth-child(2) { top: 40%; right: -50px; width: 250px; animation-delay: 2s; }
+        .line:nth-child(3) { top: 60%; left: -50px; width: 400px; animation-delay: 4s; }
+        .line:nth-child(4) { top: 80%; right: -50px; width: 350px; animation-delay: 6s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(50px) rotate(1deg); }
+            50% { transform: translateX(0) rotate(0deg); }
+            75% { transform: translateX(-30px) rotate(-1deg); }
+        }
+
+        /* Star Animation */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+            animation: starFloat 15s linear infinite;
+        }
+        
+        .star:nth-child(1) { left: 8%; top: -10vh; animation-delay: 0s; animation-duration: 12s; }
+        .star:nth-child(2) { left: 22%; top: -15vh; animation-delay: 0.2s; animation-duration: 14s; }
+        .star:nth-child(3) { left: 38%; top: -8vh; animation-delay: 0.4s; animation-duration: 16s; }
+        .star:nth-child(4) { left: 52%; top: -12vh; animation-delay: 0.6s; animation-duration: 13s; }
+        .star:nth-child(5) { left: 68%; top: -6vh; animation-delay: 0.8s; animation-duration: 15s; }
+        .star:nth-child(6) { left: 82%; top: -14vh; animation-delay: 1s; animation-duration: 17s; }
+        .star:nth-child(7) { left: 15%; top: -20vh; animation-delay: 1.2s; animation-duration: 11s; }
+        .star:nth-child(8) { left: 45%; top: -18vh; animation-delay: 1.4s; animation-duration: 18s; }
+        .star:nth-child(9) { left: 75%; top: -16vh; animation-delay: 1.6s; animation-duration: 14s; }
+        .star:nth-child(10) { left: 90%; top: -22vh; animation-delay: 1.8s; animation-duration: 19s; }
+        
+        @keyframes starFloat {
+            0% {
+                transform: translateY(0vh) translateX(0px) scale(0.8);
+                opacity: 0.7;
+            }
+            20% {
+                opacity: 1;
+                transform: translateY(20vh) translateX(8px) scale(1);
+            }
+            40% {
+                opacity: 1;
+                transform: translateY(40vh) translateX(-6px) scale(1.1);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(60vh) translateX(12px) scale(1);
+            }
+            80% {
+                opacity: 0.8;
+                transform: translateY(80vh) translateX(-8px) scale(0.9);
+            }
+            100% {
+                transform: translateY(110vh) translateX(0px) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Header */
+        .header {
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 15, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 1000;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: none;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #6366f1;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Menu Toggle - Hamburger moderne */
+        .menu-toggle {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1400;
+            position: relative;
+        }
+
+        .hamburger-line {
+            width: 25px;
+            height: 2px;
+            background: #fff;
+            margin: 3px 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-radius: 2px;
+        }
+
+        /* Animation hamburger -> X */
+        .menu-toggle.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .menu-toggle.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Menu overlay */
+        .menu-overlay {
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            opacity: 0; 
+            visibility: hidden; 
+            transition: all 0.4s ease;
+            z-index: 1250;
+        }
+
+        .menu-overlay.active { 
+            opacity: 1; 
+            visibility: visible; 
+        }
+
+        /* Mobile menu - Animation slide moderne */
+        .mobile-menu {
+            position: fixed; 
+            top: 0; 
+            right: 0;
+            width: 320px; 
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(10,10,15,0.95), rgba(20,20,30,0.95));
+            backdrop-filter: blur(25px);
+            padding: 100px 40px 40px;
+            text-align: left;
+            box-shadow: -15px 0 50px rgba(0,0,0,0.5);
+            border-left: 1px solid rgba(99,102,241,0.2);
+            transform: translateX(100%); 
+            opacity: 0; 
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1300;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0); 
+            opacity: 1; 
+            visibility: visible;
+        }
+
+        /* Close button inside mobile menu */
+        .close-menu {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(-8px);
+            z-index: 1401;
+        }
+
+        .close-menu:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .close-menu:focus {
+            outline: 2px solid rgba(255, 255, 255, 0.35);
+            outline-offset: 2px;
+        }
+
+        .close-menu .close-line {
+            position: absolute;
+            width: 18px;
+            height: 2px;
+            background: #fff;
+            border-radius: 2px;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .close-menu .close-line:first-child { transform: rotate(45deg); }
+        .close-menu .close-line:last-child { transform: rotate(-45deg); }
+
+        .mobile-menu.active .close-menu {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.08s;
+        }
+
+        .mobile-menu ul { 
+            list-style: none; 
+            padding: 0; 
+            margin: 40px 0; 
+        }
+
+        .mobile-menu ul li {
+            margin: 25px 0; 
+            opacity: 0; 
+            transform: translateX(30px);
+            transition: all 0.4s ease;
+        }
+
+        /* Animation séquentielle des items */
+        .mobile-menu.active ul li { 
+            opacity: 1; 
+            transform: translateX(0); 
+        }
+
+        .mobile-menu.active ul li:nth-child(1) { 
+            transition-delay: 0.1s; 
+        }
+
+        .mobile-menu.active ul li:nth-child(2) { 
+            transition-delay: 0.2s; 
+        }
+
+        .mobile-menu.active ul li:nth-child(3) { 
+            transition-delay: 0.3s; 
+        }
+
+        .mobile-menu.active ul li:nth-child(4) { 
+            transition-delay: 0.4s; 
+        }
+
+        .mobile-menu ul li a {
+            color: rgba(255,255,255,0.9); 
+            text-decoration: none; 
+            font-size: 1.4rem; 
+            font-weight: 600;
+            padding: 15px 20px; 
+            display: block; 
+            border-radius: 12px; 
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Effet hover moderne */
+        .mobile-menu ul li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(99,102,241,0.15), rgba(139,92,246,0.15));
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .mobile-menu ul li a:hover::before {
+            left: 0;
+        }
+
+        .mobile-menu ul li a:hover { 
+            color: #6366f1; 
+            background: rgba(99,102,241,0.08);
+            transform: translateX(8px);
+        }
+
+        /* CTA dans le menu mobile */
+        .mobile-cta {
+            margin-top: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .mobile-menu.active .mobile-cta {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.5s;
+        }
+
+        .mobile-cta .btn-primary {
+            display: block;
+            width: 100%;
+            padding: 16px 25px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            box-shadow: 0 10px 25px rgba(99,102,241,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-cta .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(99,102,241,0.4);
+        }
+
+        /* Chat Container */
+        .chat-container {
+            display: flex;
+            height: 100vh;
+            padding-top: 70px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: slideInLeft 0.8s ease-out 0.5s both;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Holographic Sphere - Desktop */
+        .holographic-sphere {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 96px;
+            height: 96px;
+            z-index: 10;
+        }
+
+        .sphere {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(139, 92, 246, 0.8) 0%, 
+                rgba(99, 102, 241, 0.6) 30%, 
+                rgba(59, 130, 246, 0.4) 60%, 
+                transparent 100%);
+            position: relative;
+            animation: sphereRotate 8s linear infinite;
+            box-shadow: 
+                0 0 30px rgba(139, 92, 246, 0.6),
+                0 0 60px rgba(99, 102, 241, 0.4),
+                0 0 90px rgba(59, 130, 246, 0.2);
+        }
+
+        .sphere::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 20%;
+            height: 20%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+
+        .sphere::after {
+            content: '';
+            position: absolute;
+            bottom: 15%;
+            right: 15%;
+            width: 15%;
+            height: 15%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            filter: blur(1px);
+        }
+
+        @keyframes sphereRotate {
+            0% { transform: rotateY(0deg) rotateX(0deg); }
+            100% { transform: rotateY(360deg) rotateX(360deg); }
+        }
+
+        .holographic-rings {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 112px;
+            height: 112px;
+        }
+
+        .ring {
+            position: absolute;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 50%;
+            animation: ringPulse 3s ease-in-out infinite;
+        }
+
+        .ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            animation-delay: 0s;
+        }
+
+        .ring:nth-child(2) {
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0.5s;
+        }
+
+        .ring:nth-child(3) {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            animation-delay: 1s;
+        }
+
+        @keyframes ringPulse {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.3;
+            }
+            50% { 
+                transform: scale(1.1);
+                opacity: 0.6;
+            }
+        }
+
+        /* New Chat Button */
+        .new-chat-btn {
+            margin: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+
+        .new-chat-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .new-chat-btn:hover::before {
+            left: 100%;
+        }
+
+        .new-chat-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Main Chat Area */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.02);
+            animation: slideInRight 0.8s ease-out 0.7s both;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Chat Header - Hidden on desktop */
+        .chat-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            animation: fadeInUp 0.8s ease-out 0.9s both;
+            display: none; /* Hidden on desktop */
+        }
+
+        .chat-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .chat-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeInUp 0.8s ease-out 1s both;
+        }
+
+        .message {
+            display: flex;
+            gap: 15px;
+            animation: messageSlideIn 0.5s ease-out;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message-avatar.ai {
+            background: radial-gradient(circle, #4B0082 0%, #9370DB 100%);
+            color: white;
+            box-shadow: 0 0 20px rgba(147, 112, 219, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message-avatar.ai::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .message-avatar.ai.pulsing {
+            animation: omelyPulse 1s infinite ease-in-out;
+        }
+
+        @keyframes omelyPulse {
+            0% { 
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(147, 112, 219, 0.5);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(147, 112, 219, 0.8);
+            }
+            100% { 
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(147, 112, 219, 0.5);
+            }
+        }
+
+        .message-avatar.user {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            position: relative;
+        }
+
+        .message.ai .message-content {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+
+        .message-text {
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        /* AI Message Styling */
+        .ai-message-content {
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .ai-message-content p {
+            margin: 0 0 16px 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .ai-message-content strong {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.1em;
+            display: block;
+            margin: 20px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-message-content strong:first-child {
+            margin-top: 0;
+        }
+
+        .ai-message-content em {
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+        }
+
+        .ai-list {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        .ai-list li {
+            margin: 8px 0;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.5;
+        }
+
+        .ai-list li::marker {
+            color: #9370DB;
+        }
+
+        .ai-message-content br {
+            margin: 8px 0;
+        }
+
+        /* Welcome Message */
+        .welcome-message {
+            text-align: center;
+            padding: 60px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-out 1.2s both;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .welcome-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .welcome-feature {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .welcome-feature:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .welcome-feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .welcome-feature-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .welcome-feature-desc {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Chat Input */
+        .chat-input-container {
+            padding: 20px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            animation: fadeInUp 0.8s ease-out 1.1s both;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 15px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input-wrapper:focus-within {
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            min-height: 24px;
+            max-height: 120px;
+            line-height: 1.5;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .send-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .send-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Upload Button */
+        .upload-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #10b981, #059669);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .upload-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .upload-button:hover::before {
+            left: 100%;
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        /* File Preview */
+        .file-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            animation: slideInUp 0.3s ease-out;
+        }
+
+        .file-preview .file-icon {
+            font-size: 1.2rem;
+        }
+
+        .file-preview .file-info {
+            flex: 1;
+        }
+
+        .file-preview .file-name {
+            font-weight: 600;
+            color: #10b981;
+            font-size: 0.9rem;
+        }
+
+        .file-preview .file-size {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .file-preview .remove-file {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .file-preview .remove-file:hover {
+            background: rgba(239, 68, 68, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* Loading Animation */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typingBounce {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            /* Mobile menu prend moins de largeur sur très petits écrans */
+            .mobile-menu {
+                width: 100%;
+                padding: 100px 30px 40px;
+            }
+
+            .chat-container {
+                flex-direction: column;
+                padding-top: 60px;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 20px;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            /* Show chat header on mobile */
+            .chat-header {
+                display: block;
+            }
+
+            /* Mobile Holographic Sphere - Much Smaller */
+            .holographic-sphere {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                width: 48px;
+                height: 48px;
+                margin: 0;
+            }
+
+            .sphere {
+                box-shadow: 
+                    0 0 15px rgba(139, 92, 246, 0.6),
+                    0 0 30px rgba(99, 102, 241, 0.4),
+                    0 0 45px rgba(59, 130, 246, 0.2);
+            }
+
+            .holographic-rings {
+                width: 56px;
+                height: 56px;
+            }
+
+            .new-chat-btn {
+                margin: 0;
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                flex: 1;
+                margin-left: 20px;
+            }
+
+            .chat-messages {
+                padding: 20px;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .welcome-features {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .welcome-feature {
+                padding: 15px;
+            }
+
+            .chat-input-container {
+                padding: 15px 20px;
+            }
+
+            .chat-input-wrapper {
+                padding: 12px 15px;
+            }
+
+            .send-button {
+                width: 35px;
+                height: 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+
+            .sidebar {
+                padding: 15px;
+            }
+
+            .holographic-sphere {
+                width: 40px;
+                height: 40px;
+            }
+
+            .holographic-rings {
+                width: 48px;
+                height: 48px;
+            }
+
+            .new-chat-btn {
+                padding: 10px 15px;
+                font-size: 0.8rem;
+                margin-left: 15px;
+            }
+
+            .chat-header {
+                padding: 15px 20px;
+                display: none;
+            }
+
+            .chat-title {
+                font-size: 1.3rem;
+            }
+
+            .welcome-message {
+                padding: 40px 15px;
+            }
+
+            .welcome-title {
+                font-size: 1.8rem;
+            }
+
+            .welcome-subtitle {
+                font-size: 1rem;
+            }
+
+            /* Ensure chat input is visible on mobile */
+            .chat-input {
+                color: white !important;
+                background: transparent !important;
+            }
+
+            .chat-input::placeholder {
+                color: rgba(255, 255, 255, 0.6) !important;
+            }
+
+            .chat-input-wrapper {
+                background: rgba(10, 10, 15, 0.9) !important;
+                border: 2px solid rgba(255, 255, 255, 0.15) !important;
+            }
+        }
+
+        /* Smooth scrolling */
+        .chat-messages {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.5);
+        }
+
+        /* Omely 3D Violet Sphere Avatar */
+        .omely-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #4B0082 0%, #9370DB 100%);
+            box-shadow: 0 0 20px rgba(147, 112, 219, 0.5);
+            position: relative;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            animation: subtleGlow 3s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        .omely-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(147, 112, 219, 0.8);
+            animation: hoverPulse 0.6s ease-in-out;
+        }
+
+        @keyframes hoverPulse {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1.1); }
+        }
+
+        @keyframes subtleGlow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(147, 112, 219, 0.5);
+            }
+            50% { 
+                box-shadow: 0 0 25px rgba(147, 112, 219, 0.7);
+            }
+        }
+
+        .omely-avatar::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 20%;
+            height: 20%;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            filter: blur(1px);
+        }
+
+        .omely-avatar::after {
+            content: '';
+            position: absolute;
+            bottom: 20%;
+            right: 20%;
+            width: 15%;
+            height: 15%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            filter: blur(1px);
+        }
+
+        /* Pulsation Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .omely-avatar.pulsing {
+            animation: pulse 1s infinite !important;
+            box-shadow: 0 0 30px rgba(147, 112, 219, 0.8) !important;
+        }
+
+        /* Enhanced File Upload Button */
+        .upload-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669, #047857);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        /* YouTube Button */
+        .youtube-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff0000, #cc0000, #990000);
+            border: 2px solid rgba(255, 0, 0, 0.3);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .youtube-button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.5);
+            border-color: rgba(255, 0, 0, 0.6);
+        }
+
+        .youtube-button:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        /* YouTube Input Container */
+        .youtube-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 12px;
+            animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .youtube-url-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .youtube-url-input:focus {
+            border-color: rgba(255, 0, 0, 0.5);
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.1);
+        }
+
+        .youtube-url-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .transcribe-button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .transcribe-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+        }
+
+        .cancel-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .cancel-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .upload-button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+            border-color: rgba(16, 185, 129, 0.6);
+        }
+
+        .upload-button:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .upload-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .upload-button:hover::before {
+            left: 100%;
+        }
+
+        .upload-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .upload-button:hover::after {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Enhanced Send Button - Fixed glass effect */
+        .send-button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #7c3aed);
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+            border-color: rgba(99, 102, 241, 0.6);
+        }
+
+        .send-button:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .send-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+            z-index: 1;
+        }
+
+        .send-button:hover::before {
+            left: 100%;
+        }
+
+        /* Enhanced File Preview */
+        .file-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .file-preview .file-icon {
+            font-size: 1.4rem;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .file-preview .file-info {
+            flex: 1;
+        }
+
+        .file-preview .file-name {
+            font-weight: 600;
+            color: #10b981;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .file-preview .file-size {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .file-preview .remove-file {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 6px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-preview .remove-file:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Enhanced Chat Input Wrapper */
+        .chat-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            background: rgba(10, 10, 15, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 12px 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-input-wrapper:focus-within {
+            border-color: rgba(99, 102, 241, 0.6);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), 0 12px 40px rgba(0, 0, 0, 0.3);
+            background: rgba(15, 15, 25, 0.95);
+        }
+
+        /* Enhanced Chat Input */
+        .chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white !important;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            min-height: 28px;
+            max-height: 120px;
+            line-height: 1.5;
+            padding: 8px 0;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.6) !important;
+            font-style: italic;
+        }
+
+        /* Responsive adjustments for avatar */
+        @media (max-width: 768px) {
+            .omely-avatar {
+                width: 35px;
+                height: 35px;
+            }
+
+            .upload-button, .youtube-button, .send-button {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+
+            .chat-input-wrapper {
+                padding: 10px 14px;
+                gap: 10px;
+            }
+
+            .youtube-input-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .transcribe-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .omely-avatar {
+                width: 32px;
+                height: 32px;
+            }
+
+            .upload-button, .send-button {
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
+            }
+
+            .chat-input-wrapper {
+                padding: 8px 12px;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="neural-network"></div>
+        <div class="neural-lines">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+    </div>
+    
+    <!-- Stars Container -->
+    <div class="stars-container">
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <div class="logo" onclick="window.location.href='index.html'">OMELY.AI</div>
+
+            <!-- Hamburger menu moderne -->
+            <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="Menu">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </button>
+
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#features">Solutions</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Overlay (fond sombre quand menu ouvert) -->
+    <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+
+    <!-- Mobile menu -->
+    <nav class="mobile-menu" id="mobileMenu" aria-hidden="true" role="dialog" aria-label="Menu">
+        <button class="close-menu" id="closeMenu" aria-label="Fermer le menu">
+            <span class="close-line"></span>
+            <span class="close-line"></span>
+        </button>
+        <ul>
+            <li><a href="index.html#features" data-close>Solutions</a></li>
+            <li><a href="pricing.html" data-close>Pricing</a></li>
+            <li><a href="about.html" data-close>About</a></li>
+            <li><a href="contact.html" data-close>Contact</a></li>
+        </ul>
+        
+        <!-- CTA dans le menu mobile -->
+        <div class="mobile-cta">
+            <a href="index.html" class="btn-primary">Back to Home →</a>
+        </div>
+    </nav>
+
+    <!-- Chat Container -->
+    <div class="chat-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Holographic Sphere -->
+            <div class="holographic-sphere">
+                <div class="sphere"></div>
+                <div class="holographic-rings">
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                </div>
+            </div>
+
+            <!-- New Chat Button -->
+            <button class="new-chat-btn" onclick="startNewChat()">
+                ✨ Start New Chat
+            </button>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="chat-main">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="chat-title">Omely AI Assistant</div>
+                <div class="chat-subtitle">Your personal learning companion powered by neuroscience</div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chatMessages">
+                <!-- Welcome Message -->
+                <div class="welcome-message">
+                    <div class="welcome-title">Start a New Chat</div>
+                    <div class="welcome-subtitle">
+                        I'm here to help you accelerate your learning journey. Ask me anything about neuroscience, 
+                        learning techniques, or personal development. Let's unlock your full potential together!
+                    </div>
+                    
+                    <div class="welcome-features">
+                        <div class="welcome-feature">
+                            <div class="welcome-feature-icon">⚡</div>
+                            <div class="welcome-feature-title">Fast Learning</div>
+                            <div class="welcome-feature-desc">Optimize your study methods</div>
+                        </div>
+                        <div class="welcome-feature">
+                            <div class="welcome-feature-icon">🎯</div>
+                            <div class="welcome-feature-title">Goal Setting</div>
+                            <div class="welcome-feature-desc">Achieve your objectives</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <input type="file" id="fileInput" class="upload-input" accept=".mp3,.mp4,.pdf,.doc,.docx,.txt" multiple>
+                    <button class="upload-button" id="uploadButton" onclick="document.getElementById('fileInput').click()">
+                        📎
+                    </button>
+                    <button class="youtube-button" id="youtubeButton" onclick="showYouTubeInput()">
+                        🎬
+                    </button>
+                    <textarea 
+                        class="chat-input" 
+                        id="chatInput" 
+                        placeholder="Type your message here..."
+                        rows="1"
+                    ></textarea>
+                    <button class="send-button" id="sendButton" onclick="sendMessage()">
+                        ➤
+                    </button>
+                </div>
+                <div id="filePreviewContainer"></div>
+                <div id="youtubeInputContainer" class="youtube-input-container" style="display: none;">
+                    <input type="text" id="youtubeUrlInput" placeholder="Paste YouTube URL here..." class="youtube-url-input">
+                    <button class="transcribe-button" onclick="transcribeYouTube()">🎵 Transcribe</button>
+                    <button class="cancel-button" onclick="hideYouTubeInput()">✕</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chatHistory = [];
+        let isTyping = false;
+
+        // Auto-resize textarea
+        const chatInput = document.getElementById('chatInput');
+        chatInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // Send message on Enter (but allow Shift+Enter for new line)
+        chatInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function startNewChat() {
+            chatHistory = [];
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+            
+            // Send welcome message for new chat
+            setTimeout(() => {
+                sendWelcomeMessage();
+            }, 500);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message && uploadedFiles.length === 0) return;
+            if (isTyping) return;
+
+            // Prepare message with file info
+            let fullMessage = message;
+            if (uploadedFiles.length > 0) {
+                const fileList = uploadedFiles.map(file => 
+                    `[Fichier: ${file.name} (${formatFileSize(file.size)})]`
+                ).join('\n');
+                fullMessage = message + (message ? '\n\n' : '') + 'Fichiers joints:\n' + fileList;
+            }
+
+            // Clear input and files
+            input.value = '';
+            input.style.height = 'auto';
+            uploadedFiles = [];
+            updateFilePreviews();
+
+            // Remove welcome message if it exists
+            const welcomeMessage = document.querySelector('.welcome-message');
+            if (welcomeMessage) {
+                welcomeMessage.remove();
+            }
+
+            // Add user message
+            addMessage(message, 'user');
+            
+            // Start pulsation animation for Omely avatar
+            setTimeout(() => {
+                startPulsation();
+            }, 100);
+            
+            // Simulate AI response
+            simulateAIResponse(fullMessage);
+        }
+
+        function addMessage(text, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            if (sender === 'ai') {
+                // Create Omely avatar for AI messages
+                const avatar = document.createElement('div');
+                avatar.className = 'omely-avatar';
+                avatar.id = `omely-avatar-${Date.now()}`;
+                console.log('Omely avatar created for AI message');
+                
+                const content = document.createElement('div');
+                content.className = 'message-content';
+                
+                // Format AI message with proper HTML structure
+                const formattedText = formatAIResponse(text);
+                content.innerHTML = formattedText;
+                
+                messageDiv.appendChild(avatar);
+                messageDiv.appendChild(content);
+            } else {
+                // User message with regular avatar
+                const avatar = document.createElement('div');
+                avatar.className = `message-avatar ${sender}`;
+                avatar.textContent = 'U';
+                
+                const content = document.createElement('div');
+                content.className = 'message-content';
+                content.innerHTML = `<div class="message-text">${text}</div>`;
+                
+                messageDiv.appendChild(avatar);
+                messageDiv.appendChild(content);
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function formatAIResponse(text) {
+            // Convert markdown-style formatting to HTML
+            let formattedText = text
+                // Convert **text** to <strong>text</strong>
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Convert *text* to <em>text</em>
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // Convert bullet points to proper HTML lists
+                .replace(/^\s*•\s*(.*)$/gm, '<li>$1</li>')
+                // Convert numbered lists
+                .replace(/^\s*\d+\.\s*(.*)$/gm, '<li>$1</li>')
+                // Add line breaks for better spacing
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+
+            // Wrap in paragraphs and add proper structure
+            formattedText = `<div class="ai-message-content"><p>${formattedText}</p></div>`;
+            
+            // Convert lists to proper HTML - improved regex
+            formattedText = formattedText.replace(
+                /(<li>.*?<\/li>)/gs,
+                '<ul class="ai-list">$1</ul>'
+            );
+            
+            // Clean up empty paragraphs and fix list formatting
+            formattedText = formattedText.replace(/<p><\/p>/g, '');
+            formattedText = formattedText.replace(/<p><ul/g, '<ul');
+            formattedText = formattedText.replace(/<\/ul><\/p>/g, '</ul>');
+            
+            return formattedText;
+        }
+
+        function addTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message ai';
+            typingDiv.id = 'typingIndicator';
+            
+            // Create Omely avatar with pulsation animation
+            const avatar = document.createElement('div');
+            avatar.className = 'omely-avatar pulsing';
+            avatar.id = 'typing-omely-avatar';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.innerHTML = `
+                <div class="typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            
+            typingDiv.appendChild(avatar);
+            typingDiv.appendChild(content);
+            
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                stopPulsation(); // Stop pulsation animation
+                typingIndicator.remove();
+            }
+        }
+
+        async function simulateAIResponse(userMessage) {
+            isTyping = true;
+            addTypingIndicator();
+            
+            try {
+                // Generate response using Gemini API
+                const response = await generateAIResponse(userMessage);
+                
+                removeTypingIndicator();
+                addMessage(response, 'ai');
+            } catch (error) {
+                console.error('Error in AI response:', error);
+                removeTypingIndicator();
+                addMessage("Désolé, je rencontre des difficultés techniques. Pouvez-vous réessayer ? 🤖", 'ai');
+            } finally {
+                isTyping = false;
+            }
+        }
+
+        // Function to start pulsation animation
+        function startPulsation() {
+            const typingAvatar = document.getElementById('typing-omely-avatar');
+            if (typingAvatar) {
+                typingAvatar.classList.add('pulsing');
+                console.log('Omely avatar pulsation started');
+            } else {
+                console.log('Typing avatar not found for pulsation');
+            }
+        }
+
+        // Function to stop pulsation animation
+        function stopPulsation() {
+            const typingAvatar = document.getElementById('typing-omely-avatar');
+            if (typingAvatar) {
+                typingAvatar.classList.remove('pulsing');
+                console.log('Omely avatar pulsation stopped');
+            }
+        }
+
+        // Configuration Gemini AI
+        const GEMINI_API_KEY = 'AIzaSyBCHiby_RSpR2vNbcj-TFov7OgJOBCwX3I';
+        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+
+        const systemPrompt = `You are OMELY, a super chill and friendly AI learning buddy who's here to hang out and help you discover cool stuff about learning and personal growth. Think of me as that smart friend who's always down to chat and share interesting insights, but never pushes you to do anything you're not feeling.
+
+CORE VIBE
+
+I'm all about good vibes and natural conversations. I'm genuinely curious about what you're into and what makes you tick. I share knowledge because I think it's fascinating, not because I'm trying to "fix" you or make you follow some rigid plan.
+
+MY APPROACH
+
+I'm more like "That's interesting! Want to explore that together?" rather than "Here's your 5-step action plan." I let conversations flow naturally and share insights when they feel relevant and helpful.
+
+I'm super into:
+• Neuroscience and how our brains work (it's pretty wild!)
+• Learning techniques that actually feel good
+• Helping people see their potential without being pushy
+• Just having genuine, interesting conversations
+
+HOW I TALK
+
+I match your language (French/English) and keep it real. I'm conversational, use emojis sometimes, and I'm genuinely excited about cool ideas. I don't force structure or formatting - I just share what feels right in the moment.
+
+I'm more like:
+"Wow, that's a really interesting way to look at it! 🤔 You know what's cool about that? Our brains are actually..."
+
+Rather than:
+"**Key Points** • Step 1 • Step 2 • Action Plan"
+
+IMPORTANT: Don't start every message with "Hey!" or similar greetings. Only use "Hey!" in the very first message of a conversation. In subsequent messages, just dive straight into the content naturally.
+
+WHAT I'M NOT
+
+I'm not a drill sergeant or a life coach who's going to give you homework. I'm not here to analyze your "limiting beliefs" or force you into some transformation program. I'm just a friendly AI who thinks learning and personal growth are pretty awesome and loves sharing that enthusiasm.
+
+MY STYLE
+
+• Chill and supportive
+• Naturally curious about what you're working on
+• Shares insights when they feel relevant
+• Lets you lead the conversation
+• No pressure, no rigid plans
+• Just good vibes and interesting ideas
+• No repetitive greetings - just natural conversation flow
+
+I'm here to be your learning buddy, not your taskmaster. Let's just chat about cool stuff and see where it takes us! 😊`;
+
+        async function generateAIResponse(userMessage) {
+            try {
+                const response = await fetch(GEMINI_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-goog-api-key': GEMINI_API_KEY,
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: `${systemPrompt}\n\nUtilisateur: ${userMessage}\n\nOmely AI:`
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            topK: 40,
+                            topP: 0.95,
+                            maxOutputTokens: 1024,
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API Response Error:', errorText);
+                    throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error('Invalid response format from Gemini API');
+                }
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                console.error('Error details:', error.message);
+                return `Erreur technique: ${error.message}. Vérifiez votre clé API ou votre connexion internet.`;
+            }
+        }
+
+        // File upload handling
+        let uploadedFiles = [];
+        let transcriptionInProgress = false;
+
+        // Hugging Face API Configuration
+        const HUGGING_FACE_API_URL = 'https://api-inference.huggingface.co/models/openai/whisper-large-v3';
+        const HUGGING_FACE_TOKEN = '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';
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            
+            files.forEach(file => {
+                if (isValidFile(file)) {
+                    uploadedFiles.push(file);
+                    addFilePreview(file);
+                    
+                    // Auto-transcribe audio/video files
+                    if (file.type.startsWith('audio/') || file.type.startsWith('video/')) {
+                        transcribeAudioFile(file);
+                    }
+                } else {
+                    alert(`Format de fichier non supporté: ${file.name}. Formats acceptés: MP3, MP4, PDF, DOC, DOCX, TXT`);
+                }
+            });
+            
+            e.target.value = ''; // Reset input
+        });
+
+        // YouTube transcription functions
+        function showYouTubeInput() {
+            document.getElementById('youtubeInputContainer').style.display = 'flex';
+            document.getElementById('youtubeUrlInput').focus();
+        }
+
+        function hideYouTubeInput() {
+            document.getElementById('youtubeInputContainer').style.display = 'none';
+            document.getElementById('youtubeUrlInput').value = '';
+        }
+
+        async function transcribeYouTube() {
+            const url = document.getElementById('youtubeUrlInput').value.trim();
+            if (!url) {
+                alert('Please enter a YouTube URL');
+                return;
+            }
+
+            if (!isValidYouTubeUrl(url)) {
+                alert('Please enter a valid YouTube URL');
+                return;
+            }
+
+            transcriptionInProgress = true;
+            hideYouTubeInput();
+
+            // Add transcription status message
+            addMessage(`🎬 Transcribing YouTube video: ${url}`, 'user');
+            addTypingIndicator();
+
+            try {
+                // For now, we'll simulate the transcription
+                // In production, you'd need a backend service to handle YouTube downloads
+                const transcription = await simulateYouTubeTranscription(url);
+                
+                removeTypingIndicator();
+                addMessage(transcription, 'ai');
+            } catch (error) {
+                removeTypingIndicator();
+                addMessage(`❌ Error transcribing video: ${error.message}`, 'ai');
+            } finally {
+                transcriptionInProgress = false;
+            }
+        }
+
+        async function transcribeAudioFile(file) {
+            transcriptionInProgress = true;
+            
+            addMessage(`🎵 Transcribing audio file: ${file.name}`, 'user');
+            addTypingIndicator();
+
+            try {
+                const transcription = await transcribeWithHuggingFace(file);
+                
+                removeTypingIndicator();
+                addMessage(transcription, 'ai');
+            } catch (error) {
+                removeTypingIndicator();
+                addMessage(`❌ Error transcribing audio: ${error.message}`, 'ai');
+            } finally {
+                transcriptionInProgress = false;
+            }
+        }
+
+        async function transcribeWithHuggingFace(audioFile) {
+            if (!HUGGING_FACE_TOKEN) {
+                return `🎵 Audio file uploaded: ${audioFile.name}\n\n**Note:** Hugging Face API token not configured. Please add your token to enable transcription.`;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('file', audioFile);
+
+                const response = await fetch(HUGGING_FACE_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${HUGGING_FACE_TOKEN}`
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.text) {
+                    return `🎵 **Transcription Complete**\n\n**Audio File:** ${audioFile.name}\n\n**Transcription:**\n${result.text}\n\n**Analysis:** I can now help you analyze this content, create summaries, or generate learning materials based on this transcription.`;
+                } else {
+                    throw new Error('No transcription text received');
+                }
+            } catch (error) {
+                console.error('Transcription error:', error);
+                return `🎵 **Transcription Failed**\n\n**Audio File:** ${audioFile.name}\n\n**Error:** ${error.message}\n\n**Note:** Please check your Hugging Face API token and try again.`;
+            }
+        }
+
+        async function simulateYouTubeTranscription(url) {
+            try {
+                // Check if backend is available (for local development)
+                const response = await fetch('http://localhost:5000/transcribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    return `🎬 **YouTube Transcription Complete**\n\n**Video Title:** ${result.title}\n**Video URL:** ${url}\n\n**Full Transcription:**\n${result.transcription}\n\n**Key Points Extracted:**\n• Content analyzed from video\n• Main topics identified\n• Key concepts highlighted\n\n**Learning Analysis:**\nI can now help you create study materials, summaries, or quizzes based on this video content. Ask me to analyze specific parts or create learning materials!`;
+                } else {
+                    throw new Error(result.error || 'Transcription failed');
+                }
+            } catch (error) {
+                console.error('YouTube transcription error:', error);
+                
+                // Demo mode - provide helpful response
+                const videoId = extractVideoId(url);
+                return `🎬 **YouTube Analysis Demo**\n\n**Video URL:** ${url}\n\n**Demo Mode:** This is a demonstration of the YouTube transcription feature. In production, this would provide a full transcription of the video.\n\n**What I can do:**\n• Analyze the video topic based on the URL\n• Create study materials about related subjects\n• Generate learning strategies\n• Provide educational content\n\n**To enable full transcription:**\n1. Set up the Python backend locally\n2. Run: python youtube_transcriber.py\n3. The transcription feature will work automatically\n\n**Current Analysis:**\nI can help you learn about topics related to this video. What would you like to explore?`;
+            }
+        }
+
+        function extractVideoId(url) {
+            const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        async function getYouTubeTranscription(videoId) {
+            try {
+                // Get video info
+                const videoInfo = await getVideoInfo(videoId);
+                
+                if (videoInfo) {
+                    // For now, we'll provide a helpful response based on the video title
+                    // In production, you'd integrate with a transcription service
+                    return `Video Title: ${videoInfo.title}\n\n**Analysis Based on Video Information:**\n\nThis appears to be a video about "${videoInfo.title}". While I can't provide the full transcription due to technical limitations, I can help you:\n\n**What I can do:**\n• Analyze the topic based on the video title\n• Create study materials about this subject\n• Generate questions and learning strategies\n• Provide related educational content\n\n**Next Steps:**\nTell me what specific aspect of this video you'd like to learn about, and I'll create personalized learning materials for you!`;
+                }
+                
+                throw new Error('Unable to fetch video information');
+            } catch (error) {
+                throw new Error('Video analysis failed: ' + error.message);
+            }
+        }
+
+        async function getVideoInfo(videoId) {
+            try {
+                // This is a simplified approach - in production you'd use YouTube Data API
+                const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    return {
+                        title: data.title,
+                        description: `Video about ${data.title}`
+                    };
+                }
+            } catch (error) {
+                console.error('Error fetching video info:', error);
+            }
+            
+            return null;
+        }
+
+        function isValidYouTubeUrl(url) {
+            const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+/;
+            return youtubeRegex.test(url);
+        }
+
+        function isValidFile(file) {
+            const validTypes = [
+                'audio/mpeg', 'audio/mp3', 'audio/mp4',
+                'video/mp4', 'video/quicktime',
+                'application/pdf',
+                'application/msword',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'text/plain'
+            ];
+            return validTypes.includes(file.type) || 
+                   file.name.match(/\.(mp3|mp4|pdf|doc|docx|txt)$/i);
+        }
+
+        function addFilePreview(file) {
+            const container = document.getElementById('filePreviewContainer');
+            const preview = document.createElement('div');
+            preview.className = 'file-preview';
+            
+            const fileIcon = getFileIcon(file);
+            const fileSize = formatFileSize(file.size);
+            
+            preview.innerHTML = `
+                <div class="file-icon">${fileIcon}</div>
+                <div class="file-info">
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${fileSize}</div>
+                </div>
+                <button class="remove-file" onclick="removeFile('${file.name}')">×</button>
+            `;
+            
+            container.appendChild(preview);
+        }
+
+        function getFileIcon(file) {
+            if (file.type.startsWith('audio/')) return '🎵';
+            if (file.type.startsWith('video/')) return '🎬';
+            if (file.type === 'application/pdf') return '📄';
+            if (file.type.includes('word')) return '📝';
+            if (file.type === 'text/plain') return '📄';
+            return '📎';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function removeFile(fileName) {
+            uploadedFiles = uploadedFiles.filter(file => file.name !== fileName);
+            updateFilePreviews();
+        }
+
+        function updateFilePreviews() {
+            const container = document.getElementById('filePreviewContainer');
+            container.innerHTML = '';
+            uploadedFiles.forEach(file => addFilePreview(file));
+        }
+
+        // Initialize with page load animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Focus on input after animations complete
+            setTimeout(() => {
+                chatInput.focus();
+            }, 1500);
+
+            // Send welcome message from Omely after a short delay
+            setTimeout(() => {
+                sendWelcomeMessage();
+            }, 2000);
+        });
+
+        function sendWelcomeMessage() {
+            const welcomeMessage = document.querySelector('.welcome-message');
+            if (welcomeMessage) {
+                welcomeMessage.remove();
+            }
+
+            const welcomeText = `Hey !`;
+
+            addMessage(welcomeText, 'ai');
+        }
+
+        // Script pour le menu mobile moderne
+        (function () {
+            const menuToggle = document.getElementById('menuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const body = document.body;
+            const closeMenuBtn = document.getElementById('closeMenu');
+
+            function openMenu() {
+                // Ajouter les classes actives
+                menuToggle.classList.add('active');
+                mobileMenu.classList.add('active');
+                menuOverlay.classList.add('active');
+                body.classList.add('no-scroll');
+                
+                // Accessibilité
+                menuToggle.setAttribute('aria-expanded', 'true');
+                mobileMenu.setAttribute('aria-hidden', 'false');
+                menuOverlay.setAttribute('aria-hidden', 'false');
+            }
+
+            function closeMenu() {
+                // Retirer les classes actives
+                menuToggle.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                menuOverlay.classList.remove('active');
+                body.classList.remove('no-scroll');
+                
+                // Accessibilité
+                menuToggle.setAttribute('aria-expanded', 'false');
+                mobileMenu.setAttribute('aria-hidden', 'true');
+                menuOverlay.setAttribute('aria-hidden', 'true');
+            }
+
+            function toggleMenu() {
+                if (mobileMenu.classList.contains('active')) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            }
+
+            // Événements
+            menuToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                toggleMenu();
+            });
+
+            // Fermer en cliquant sur l'overlay
+            menuOverlay.addEventListener('click', function () {
+                closeMenu();
+            });
+
+            // Bouton de fermeture interne
+            if (closeMenuBtn) {
+                closeMenuBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    closeMenu();
+                });
+            }
+
+            // Fermer avec Échap
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                    closeMenu();
+                }
+            });
+
+            // Fermer en cliquant sur un lien du menu
+            document.querySelectorAll('#mobileMenu [data-close]').forEach(link => {
+                link.addEventListener('click', function () {
+                    // Petit délai pour permettre la navigation
+                    setTimeout(closeMenu, 100);
+                });
+            });
+
+            // Fermer si clic en dehors du menu
+            document.addEventListener('click', function (e) {
+                if (
+                    !mobileMenu.contains(e.target) && 
+                    !menuToggle.contains(e.target) && 
+                    mobileMenu.classList.contains('active')
+                ) {
+                    closeMenu();
+                }
+            });
+
+        })();
+    </script>
+</body>
+</html>
