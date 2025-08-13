@@ -1,6 +1,6 @@
 # 🚀 Déploiement Railway - Backend YouTube Transcription
 
-Guide pour déployer le backend sur Railway (gratuit) et avoir la transcription YouTube en ligne.
+Guide pour déployer le backend de transcription YouTube sur Railway.
 
 ## 📋 Prérequis
 
@@ -30,7 +30,7 @@ Uploadez ces fichiers dans votre repository :
 2. Connectez-vous avec GitHub
 3. Cliquez "New Project"
 4. Sélectionnez "Deploy from GitHub repo"
-5. Choisissez votre repository `omely-backend`
+5. Choisissez votre repository
 6. Railway détectera automatiquement que c'est Python
 
 ### **4. Configuration Railway**
@@ -52,12 +52,12 @@ Railway va automatiquement :
 
 Remplacez cette ligne dans `app.html` :
 ```javascript
-const response = await fetch('http://localhost:5000/transcribe', {
+const response = await fetch('https://VOTRE-URL-RAILWAY/transcribe', {
 ```
 
-Par :
+Par votre vraie URL Railway :
 ```javascript
-const response = await fetch('https://VOTRE-URL-RAILWAY/transcribe', {
+const response = await fetch('https://omely-backend-production.up.railway.app/transcribe', {
 ```
 
 ## 🧪 Test
@@ -104,4 +104,3 @@ curl -X POST https://VOTRE-URL-RAILWAY/transcribe \
 ---
 
 **🎯 Résultat Final** : Transcription YouTube complète en ligne ! 🚀
-

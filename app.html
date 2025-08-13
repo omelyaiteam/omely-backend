@@ -2243,9 +2243,8 @@ I'm here to be your learning buddy, not your taskmaster. Let's just chat about c
             addTypingIndicator();
 
             try {
-                // For now, we'll simulate the transcription
-                // In production, you'd need a backend service to handle YouTube downloads
-                const transcription = await simulateYouTubeTranscription(url);
+                // Real YouTube transcription via Railway backend
+                const transcription = await transcribeYouTubeVideo(url);
                 
                 removeTypingIndicator();
                 addMessage(transcription, 'ai');
@@ -2310,10 +2309,9 @@ I'm here to be your learning buddy, not your taskmaster. Let's just chat about c
             }
         }
 
-        async function simulateYouTubeTranscription(url) {
+        async function transcribeYouTubeVideo(url) {
             try {
-                // Check if backend is available (for local development)
-                const response = await fetch('http://localhost:5000/transcribe', {
+                const response = await fetch('https://VOTRE-URL-RAILWAY/transcribe', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -2328,59 +2326,14 @@ I'm here to be your learning buddy, not your taskmaster. Let's just chat about c
                 const result = await response.json();
                 
                 if (result.success) {
-                    return `🎬 **YouTube Transcription Complete**\n\n**Video Title:** ${result.title}\n**Video URL:** ${url}\n\n**Full Transcription:**\n${result.transcription}\n\n**Key Points Extracted:**\n• Content analyzed from video\n• Main topics identified\n• Key concepts highlighted\n\n**Learning Analysis:**\nI can now help you create study materials, summaries, or quizzes based on this video content. Ask me to analyze specific parts or create learning materials!`;
+                    return `🎬 **YouTube Transcription Complete**\n\n**Video Title:** ${result.title}\n**Video URL:** ${url}\n\n**Transcription:**\n${result.transcription}\n\n**Learning Analysis:**\nI can now help you create study materials, summaries, or quizzes based on this video content.`;
                 } else {
                     throw new Error(result.error || 'Transcription failed');
                 }
             } catch (error) {
-                console.error('YouTube transcription error:', error);
-                
-                // Demo mode - provide helpful response
-                const videoId = extractVideoId(url);
-                return `🎬 **YouTube Analysis Demo**\n\n**Video URL:** ${url}\n\n**Demo Mode:** This is a demonstration of the YouTube transcription feature. In production, this would provide a full transcription of the video.\n\n**What I can do:**\n• Analyze the video topic based on the URL\n• Create study materials about related subjects\n• Generate learning strategies\n• Provide educational content\n\n**To enable full transcription:**\n1. Set up the Python backend locally\n2. Run: python youtube_transcriber.py\n3. The transcription feature will work automatically\n\n**Current Analysis:**\nI can help you learn about topics related to this video. What would you like to explore?`;
+                console.error('Transcription error:', error);
+                throw new Error(`Transcription failed: ${error.message}`);
             }
-        }
-
-        function extractVideoId(url) {
-            const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/;
-            const match = url.match(regex);
-            return match ? match[1] : null;
-        }
-
-        async function getYouTubeTranscription(videoId) {
-            try {
-                // Get video info
-                const videoInfo = await getVideoInfo(videoId);
-                
-                if (videoInfo) {
-                    // For now, we'll provide a helpful response based on the video title
-                    // In production, you'd integrate with a transcription service
-                    return `Video Title: ${videoInfo.title}\n\n**Analysis Based on Video Information:**\n\nThis appears to be a video about "${videoInfo.title}". While I can't provide the full transcription due to technical limitations, I can help you:\n\n**What I can do:**\n• Analyze the topic based on the video title\n• Create study materials about this subject\n• Generate questions and learning strategies\n• Provide related educational content\n\n**Next Steps:**\nTell me what specific aspect of this video you'd like to learn about, and I'll create personalized learning materials for you!`;
-                }
-                
-                throw new Error('Unable to fetch video information');
-            } catch (error) {
-                throw new Error('Video analysis failed: ' + error.message);
-            }
-        }
-
-        async function getVideoInfo(videoId) {
-            try {
-                // This is a simplified approach - in production you'd use YouTube Data API
-                const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    return {
-                        title: data.title,
-                        description: `Video about ${data.title}`
-                    };
-                }
-            } catch (error) {
-                console.error('Error fetching video info:', error);
-            }
-            
-            return null;
         }
 
         function isValidYouTubeUrl(url) {

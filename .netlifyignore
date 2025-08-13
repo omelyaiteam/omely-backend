@@ -1,16 +1,4 @@
-# Ignore EVERYTHING except HTML/CSS/JS files
-*
-!*.html
-!*.css
-!*.js
-!*.php
-!netlify.toml
-!.netlifyignore
-
-# Ignore backend folder completely
-backend/
-
-# Explicitly ignore all Python files
+# Ignore all Python files for Netlify deployment
 *.py
 *.pyc
 __pycache__/
@@ -26,35 +14,23 @@ runtime.txt
 Procfile
 .python-version
 
-# Ignore all documentation
-*.md
-*BACKEND*.md
-*backend*.md
-
-# Ignore all config files
-.git/
-.gitignore
-.nvmrc
-.node-version
-package.json
-package-lock.json
-yarn.lock
-
-# Ignore all environments
+# Virtual environments
 venv/
 env/
 ENV/
 .venv/
 
-# Ignore IDE files
+# IDE files
 .vscode/
 .idea/
 
-# Ignore OS files
+# OS files
 .DS_Store
 Thumbs.db
 
-# Ignore logs and temp files
+# Logs
 *.log
+
+# Temporary files
 *.tmp
 *.temp
