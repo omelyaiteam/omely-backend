@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "youtube_transcriber.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "youtube_transcriber.py"
+    }
+  ],
+  "functions": {
+    "youtube_transcriber.py": {
+      "maxDuration": 300
+    }
+  }
+}

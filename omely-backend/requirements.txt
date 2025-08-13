@@ -1,4 +1,20 @@
+<<<<<<< HEAD
 flask==2.3.3
 flask-cors==4.0.0
-yt-dlp==2023.7.6
+gunicorn==21.2.0
+requests==2.31.0
+yt-dlp==2024.12.13
 openai-whisper==20231117
+transformers==4.36.0
+torch==2.1.0
+torchaudio==2.1.0
+ffmpeg-python==0.2.0
+numpy==1.24.3
+scipy==1.11.4
+=======
+flask==2.3.3
+flask-cors==4.0.0
+gunicorn==21.2.0
+requests==2.31.0
+yt-dlp==2024.12.13
+>>>>>>> 59399861cfbc6b1fba6d39c815cf49e3922f95f3

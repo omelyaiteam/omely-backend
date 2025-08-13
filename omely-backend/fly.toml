@@ -1,0 +1,47 @@
+<<<<<<< HEAD
+app = "omely-backend"
+primary_region = "cdg"
+
+[build]
+
+[env]
+  PORT = "8080"
+  YOUTUBE_API_KEY = "tAIzaSyBFFIiWNHz6Y_0fNkkxuDT34Is_wBk4Tx8"
+  HUGGINGFACE_API_KEY = "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"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 2
+  memory_mb = 2048
+=======
+app = "omely-backend"
+primary_region = "cdg"
+
+[build]
+
+[env]
+  PORT = "8080"
+  YOUTUBE_API_KEY = "tAIzaSyBFFIiWNHz6Y_0fNkkxuDT34Is_wBk4Tx8"
+  HUGGINGFACE_API_KEY = "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"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 1024
+>>>>>>> 59399861cfbc6b1fba6d39c815cf49e3922f95f3
