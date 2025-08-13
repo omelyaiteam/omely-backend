@@ -1,4 +1,4 @@
-# Ignore all Python files for Netlify deployment
+# Ignore ALL Python files for Netlify deployment
 *.py
 *.pyc
 __pycache__/
@@ -10,6 +10,9 @@ Pipfile
 Pipfile.lock
 poetry.lock
 pyproject.toml
+runtime.txt
+Procfile
+.python-version
 
 # Backend documentation
 *BACKEND*.md

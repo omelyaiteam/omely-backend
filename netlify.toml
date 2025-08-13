@@ -1,14 +1,16 @@
 [build]
-  # Pure static HTML site - no build process needed
+  # Force static site - NO build process
   publish = "."
-  command = ""
+  command = "echo 'Static site - no build needed'"
 
 [build.environment]
-  # Completely skip dependency installation
-  NPM_FLAGS = "--ignore-scripts --no-optional --no-audit --no-fund"
+  # Force Node.js and disable Python
   NODE_VERSION = "18"
-  # Disable Python detection
+  NPM_FLAGS = "--ignore-scripts --no-optional --no-audit --no-fund"
+  # Explicitly disable Python
   PYTHON_VERSION = ""
+  # Disable Python detection completely
+  PYTHON_ENABLED = "false"
 
 # Handle all routes (SPA-like behavior)
 [[redirects]]
@@ -29,3 +31,9 @@
 # Explicitly ignore Python files
 [build.processing]
   skip_processing = false
+
+# Completely disable Python
+[build.environment]
+  PYTHON_ENABLED = "false"
+  PYTHON_VERSION = ""
+  NODE_VERSION = "18"
