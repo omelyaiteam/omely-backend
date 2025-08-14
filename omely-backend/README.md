@@ -1,47 +1,114 @@
-<<<<<<< HEAD
-# 🎯 OMELY - Système de Summarisation YouTube
+# 🎯 OMELY YouTube Transcription API
 
-Pipeline complet de traitement vidéo : **YouTube URL → MP3 → Whisper → IA Summary**
+Système de transcription YouTube avancé avec anti-détection et traitement local.
 
 ## 🚀 Fonctionnalités
 
-- **YouTube to MP3** : Téléchargement automatique de l'audio
-- **Whisper Transcription** : Transcription précise avec OpenAI Whisper
-- **IA Summarisation** : Résumé intelligent avec Hugging Face BART
-- **API REST** : Interface simple et efficace
-- **Déploiement Fly.io** : Infrastructure cloud optimisée
+- **Extraction YouTube** : Utilise yt-dlp avec techniques anti-détection avancées
+- **Transcription locale** : OpenAI Whisper avec support GPU/CPU
+- **Anti-détection** : Rotation de user agents, proxies, cookies navigateur
+- **Gestion des fichiers** : Nettoyage automatique des fichiers temporaires
+- **API REST** : FastAPI avec documentation automatique
+- **Production ready** : Optimisé pour fly.io avec Docker
 
-## 🛠️ Technologies
+## 🏗️ Architecture
 
-- **Backend** : Flask + Python 3.11
-- **Audio** : yt-dlp + FFmpeg
-- **Transcription** : OpenAI Whisper
-- **IA** : Hugging Face Transformers (BART-large-CNN)
-- **Déploiement** : Fly.io + Docker
+```
+backend/
+├── main.py                 # Serveur FastAPI principal
+├── services/
+│   ├── youtube_extractor.py    # Extraction YouTube avec yt-dlp
+│   ├── transcription.py        # Service Whisper local
+│   └── proxy_manager.py        # Gestion des proxies
+├── utils/
+│   └── temp_cleanup.py         # Nettoyage des fichiers temporaires
+├── requirements.txt            # Dépendances Python
+├── Dockerfile                  # Configuration Docker
+└── fly.toml                   # Configuration fly.io
+```
 
-## 📦 Installation
+## 🛠️ Installation
 
 ### Prérequis
+
 - Python 3.11+
 - FFmpeg
 - Git
 
 ### Installation locale
+
 ```bash
-# Cloner le projet
-git clone <repository>
+# Cloner le repository
+git clone <repository-url>
 cd omely-backend
+
+# Créer un environnement virtuel
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# ou
+venv\Scripts\activate     # Windows
 
 # Installer les dépendances
 pip install -r requirements.txt
 
-# Lancer l'application
-python app.py
+# Démarrer le serveur
+python main.py
 ```
 
-### Déploiement Fly.io
+### Variables d'environnement
+
 ```bash
-# Installer Fly CLI
+# Configuration des proxies (optionnel)
+PROXY_ENABLED=true
+PROXY_LIST=http://proxy1:port,http://proxy2:port
+PROXY_ROTATION=true
+
+# Configuration du serveur
+PORT=8000
+HOST=0.0.0.0
+DEBUG=false
+```
+
+## 📡 API Endpoints
+
+### GET /
+Page d'accueil avec informations sur l'API
+
+### GET /health
+Vérification de l'état des services
+
+### GET /status
+Statut détaillé du système
+
+### POST /extract-transcribe
+Transcription d'une vidéo YouTube
+
+**Request:**
+```json
+{
+  "youtube_url": "https://www.youtube.com/watch?v=...",
+  "language": "auto",
+  "max_duration": 7200
+}
+```
+
+**Response:**
+```json
+{
+  "status": "success",
+  "transcription": "Texte transcrit...",
+  "duration": 1830,
+  "title": "Titre de la vidéo",
+  "processing_time": 45.2
+}
+```
+
+## 🚀 Déploiement
+
+### Fly.io
+
+```bash
+# Installer flyctl
 curl -L https://fly.io/install.sh | sh
 
 # Se connecter
@@ -49,121 +116,134 @@ fly auth login
 
 # Déployer
 fly deploy
+
+# Vérifier le statut
+fly status
 ```
 
-## 🔌 API Endpoints
+### Docker
 
-### POST /summarize
-Summariser une vidéo YouTube
-
-**Request:**
-```json
-{
-  "video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "video_id": "dQw4w9WgXcQ",
-  "video_title": "Rick Astley - Never Gonna Give You Up",
-  "video_duration": 212,
-  "transcription": "Never gonna give you up...",
-  "summary": "Rick Astley performs his hit song...",
-  "transcription_length": 1500,
-  "summary_length": 200
-}
-```
-
-### GET /health
-Vérifier l'état du service
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "models_loaded": true
-}
-```
-
-### GET /
-Page d'accueil avec documentation
-
-## 🎯 Utilisation
-
-### Exemple avec cURL
 ```bash
-curl -X POST http://localhost:8080/summarize \
-  -H "Content-Type: application/json" \
-  -d '{"video_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}'
+# Construire l'image
+docker build -t omely-backend .
+
+# Lancer le conteneur
+docker run -p 8000:8000 omely-backend
 ```
 
-### Exemple avec JavaScript
-```javascript
-const response = await fetch('https://omely-backend.fly.dev/summarize', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-  })
-});
+## 🧪 Tests
 
-const result = await response.json();
-console.log(result.summary);
+```bash
+# Lancer les tests
+python test_new_api.py
+
+# Tests manuels avec curl
+curl http://localhost:8000/health
+curl http://localhost:8000/status
 ```
 
-## 🔧 Configuration
+## 🔧 Configuration avancée
 
-### Variables d'environnement
-- `HUGGINGFACE_API_KEY` : Clé API Hugging Face
-- `YOUTUBE_API_KEY` : Clé API YouTube (optionnel)
-- `PORT` : Port du serveur (défaut: 8080)
+### Anti-détection YouTube
 
-### Modèles Whisper
-- **base** : Modèle par défaut (équilibre vitesse/précision)
-- **small** : Plus rapide, moins précis
-- **medium** : Plus précis, plus lent
-- **large** : Le plus précis, le plus lent
+Le système utilise plusieurs techniques pour éviter la détection :
 
-## 📊 Performance
+- **Rotation de user agents** : 5 user agents différents
+- **Headers réalistes** : Headers HTTP complets
+- **Cookies navigateur** : Utilisation des cookies Chrome
+- **Proxies** : Support de rotation de proxies
+- **Retry automatique** : 3 tentatives avec délais aléatoires
 
-- **Temps de traitement** : 2-5 minutes selon la durée de la vidéo
-- **Précision transcription** : 95%+ avec Whisper
-- **Qualité résumé** : Résumé intelligent et contextuel
-- **Mémoire requise** : 2GB RAM minimum
+### Optimisation Whisper
 
-## 🚨 Limitations
+- **Détection automatique GPU** : Utilise CUDA si disponible
+- **Modèle adaptatif** : Choisit le modèle selon la mémoire
+- **Chunking** : Découpe les longues vidéos en chunks
+- **Support multilingue** : Détection automatique de langue
 
-- Vidéos YouTube publiques uniquement
-- Durée maximale recommandée : 30 minutes
-- Limite de bande passante selon le plan Fly.io
-- Modèles IA nécessitent un temps de chargement initial
+### Gestion des fichiers
 
-## 🔄 Pipeline de traitement
+- **Nettoyage automatique** : Suppression des fichiers temporaires
+- **Limites de taille** : Max 2GB par fichier, 10GB total
+- **Rotation temporelle** : Nettoyage des fichiers de plus de 24h
 
-1. **Extraction ID vidéo** : Parse l'URL YouTube
-2. **Téléchargement audio** : yt-dlp + FFmpeg → MP3
-3. **Transcription Whisper** : Audio → Texte
-4. **Summarisation IA** : Texte → Résumé intelligent
-5. **Nettoyage** : Suppression fichiers temporaires
+## 📊 Monitoring
 
-## 🛡️ Sécurité
+### Health Check
+```bash
+curl http://localhost:8000/health
+```
 
-- Validation des URLs YouTube
-- Nettoyage automatique des fichiers
-- Gestion des erreurs robuste
-- CORS configuré pour le frontend
+### Statut détaillé
+```bash
+curl http://localhost:8000/status
+```
 
-## 📈 Monitoring
+### Logs
+```bash
+# Voir les logs en temps réel
+fly logs
 
-- Logs détaillés de chaque étape
-- Endpoint `/health` pour monitoring
-- Gestion des timeouts
-- Retry automatique en cas d'échec
+# Logs avec filtrage
+fly logs --app omely-backend
+```
+
+## 🔒 Sécurité
+
+- **Validation des URLs** : Vérification des URLs YouTube
+- **Limites de durée** : Max 2 heures par vidéo
+- **Limites de taille** : Max 2GB par fichier
+- **Rate limiting** : Protection contre les abus
+- **Nettoyage automatique** : Suppression des données sensibles
+
+## 🐛 Dépannage
+
+### Problèmes courants
+
+1. **Erreur d'import Whisper**
+   ```bash
+   pip install --upgrade openai-whisper
+   ```
+
+2. **Erreur FFmpeg**
+   ```bash
+   # Ubuntu/Debian
+   sudo apt-get install ffmpeg
+   
+   # macOS
+   brew install ffmpeg
+   
+   # Windows
+   # Télécharger depuis https://ffmpeg.org/
+   ```
+
+3. **Erreur de mémoire**
+   - Réduire la taille des chunks
+   - Utiliser un modèle Whisper plus petit
+   - Augmenter la mémoire sur fly.io
+
+### Logs de debug
+
+```bash
+# Activer les logs détaillés
+export DEBUG=true
+python main.py
+```
+
+## 📈 Performance
+
+### Optimisations
+
+- **GPU acceleration** : Utilisation automatique de CUDA
+- **Chunking intelligent** : Découpe optimisée des vidéos
+- **Cache des modèles** : Réutilisation des modèles Whisper
+- **Nettoyage asynchrone** : Nettoyage en arrière-plan
+
+### Métriques
+
+- **Temps de traitement** : ~1-2x la durée de la vidéo
+- **Utilisation mémoire** : 2-4GB selon le modèle
+- **Taille des fichiers** : ~10-50MB par heure de vidéo
 
 ## 🤝 Contribution
 
@@ -175,44 +255,10 @@ console.log(result.summary);
 
 ## 📄 Licence
 
-MIT License - Voir LICENSE pour plus de détails
-=======
-# 🎯 OMELY.AI - YouTube Transcription Backend
+MIT License - voir le fichier LICENSE pour plus de détails.
 
-Backend Flask pour la transcription automatique de vidéos YouTube avec Whisper AI.
+## 🆘 Support
 
-## 🚀 Déploiement Railway
-
-Ce backend est configuré pour être déployé automatiquement sur Railway.
-
-### Endpoints
-
-- `POST /transcribe` - Transcription YouTube
-- `GET /health` - Health check
-
-### Variables d'environnement
-
-Aucune variable d'environnement requise pour le moment.
-
-## 🛠️ Technologies
-
-- Flask
-- Whisper AI
-- yt-dlp
-- ffmpeg (installé automatiquement par Railway)
-
-## 📝 Usage
-
-```bash
-curl -X POST https://VOTRE-URL-RAILWAY/transcribe \
-  -H "Content-Type: application/json" \
-  -d '{"url": "https://www.youtube.com/watch?v=VIDEO_ID"}'
-```
-
-## 🚀 Déploiement
-
-1. Créez un repository GitHub avec ces fichiers
-2. Connectez-le à Railway
-3. Railway déploiera automatiquement le backend
-4. Copiez l'URL Railway et mettez-la dans le frontend
->>>>>>> 59399861cfbc6b1fba6d39c815cf49e3922f95f3
+- **Issues** : [GitHub Issues](https://github.com/omelyaiteam/omely-backend/issues)
+- **Documentation** : [Wiki](https://github.com/omelyaiteam/omely-backend/wiki)
+- **Discord** : [Serveur Discord](https://discord.gg/omely)

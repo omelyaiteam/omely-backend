@@ -1,54 +1,51 @@
-<<<<<<< HEAD
+# Dockerfile optimisé pour OMELY Transcription API
+# Support GPU et gestion des fichiers temporaires
+
 FROM python:3.11-slim
 
-# Installer les dépendances système
+# Variables d'environnement
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Installation des dépendances système
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     git \
+    curl \
+    wget \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Définir le répertoire de travail
+# Création de l'utilisateur non-root
+RUN useradd --create-home --shell /bin/bash omely
+
+# Création des dossiers de travail
+RUN mkdir -p /app /tmp/omely_audio /tmp/omely_chunks /tmp/omely_cache
+RUN chown -R omely:omely /app /tmp/omely_audio /tmp/omely_chunks /tmp/omely_cache
+
+# Changement vers l'utilisateur non-root
+USER omely
 WORKDIR /app
 
-# Copier les fichiers de dépendances
-COPY requirements.txt .
+# Copie des fichiers de dépendances
+COPY --chown=omely:omely requirements.txt .
 
-# Installer les dépendances Python
-RUN pip install --no-cache-dir -r requirements.txt
+# Installation des dépendances Python
+RUN pip install --no-cache-dir --user -r requirements.txt
 
-# Copier le code de l'application
-COPY . .
+# Copie du code source
+COPY --chown=omely:omely . .
 
-# Exposer le port
-EXPOSE 8080
+# Création des fichiers __init__.py pour les packages
+RUN touch services/__init__.py utils/__init__.py
+
+# Exposition du port
+EXPOSE 8000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
 
 # Commande de démarrage
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "1", "--timeout", "300", "app:app"]
-=======
-FROM python:3.11-slim
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set working directory
-WORKDIR /app
-
-# Copy requirements and install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Verify yt-dlp installation
-RUN python -c "import yt_dlp; print('yt-dlp version:', yt_dlp.version.__version__)"
-
-# Copy application code
-COPY . .
-
-# Expose port
-EXPOSE 8080
-
-# Run the application with Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "1", "--timeout", "300", "youtube_transcriber_final:app"]
->>>>>>> 59399861cfbc6b1fba6d39c815cf49e3922f95f3
+CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
