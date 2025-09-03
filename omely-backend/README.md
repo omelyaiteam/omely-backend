@@ -1,238 +1,115 @@
-# OMELY Backend Ultra-Rapide v5.0 🚀
+# OMELY BACKEND - VERSION OPTIMISÉE
 
-Backend ultra-rapide pour la summarization de contenu YouTube, audio et vidéo avec **yt-dlp**, **Whisper** et **OpenAI**.
+Backend léger utilisant GPT-4o mini et Whisper pour le traitement de fichiers PDF, audio et vidéo.
 
-## ✨ Fonctionnalités
+## 🚀 Fonctionnalités
 
-- 🎬 **YouTube Summarization** - Téléchargement ultra-rapide avec yt-dlp + proxy
-- 🎵 **Audio Transcription** - Whisper AI pour la reconnaissance vocale
-- 📝 **Content Summarization** - GPT-3.5 pour des résumés intelligents
-- 🔒 **Proxy Integration** - Proxy SOCKS5 configuré pour éviter les blocages
-- ⚡ **Ultra-Rapide** - Optimisé pour la vitesse maximale
+- 📄 **Extraction PDF** : Extraction de texte optimisée
+- 🎵 **Transcription Audio** : Utilise Whisper d'OpenAI
+- 🎬 **Traitement Vidéo** : Extraction audio + transcription
+- 🤖 **Chat IA** : Interface GPT-4o mini
+- ⚡ **Ultra-rapide** : Optimisé pour les performances
+- ☁️ **Déploiement léger** : Compatible Render, Deta, Cyclic
 
-## 🚀 Installation
+## 📋 Prérequis
 
-### Prérequis
+- Node.js 18+
+- Clé API OpenAI (pour GPT-4o mini et Whisper)
 
-1. **Node.js 18+** installé
-2. **yt-dlp** installé globalement
-3. **Clé API OpenAI** valide
-
-### Installation de yt-dlp
+## 🛠️ Installation
 
 ```bash
-# Sur macOS avec Homebrew
-brew install yt-dlp
-
-# Sur Ubuntu/Debian
-sudo apt update
-sudo apt install yt-dlp
-
-# Sur Windows avec Chocolatey
-choco install yt-dlp
-
-# Ou avec pip
-pip install yt-dlp
-```
-
-### Configuration du Backend
-
-1. **Cloner et installer les dépendances**
-```bash
-cd omely-backend
 npm install
 ```
 
-2. **Configurer la clé OpenAI**
-```bash
-# Créer un fichier .env (ou définir la variable d'environnement)
-echo "OPENAI_API_KEY=sk-proj-your-key-here" > .env
+## ⚙️ Configuration
 
-# Ou définir la variable d'environnement
-export OPENAI_API_KEY="sk-proj-your-key-here"
-```
-
-3. **Démarrer le serveur**
-```bash
-# Mode développement (avec auto-reload)
-npm run dev
-
-# Mode production
-npm start
-```
-
-## 🔧 Configuration
-
-### Variables d'environnement
+Créer un fichier `.env` :
 
 ```env
-OPENAI_API_KEY=sk-proj-your-key-here
+OPENAI_API_KEY=sk-your-openai-api-key-here
 PORT=3001
-NODE_ENV=development
+HOST=0.0.0.0
+NODE_ENV=production
 ```
 
-### Proxy Configuration
+## 🚀 Démarrage
 
-Le proxy SOCKS5 est déjà configuré dans le code :
-```javascript
-proxy: 'socks5://00d3bd63b39069b84eb9:7a942b1b7d9b3782@gw.dataimpulse.com:824'
+```bash
+# Développement
+npm run dev
+
+# Production
+npm start
 ```
 
 ## 📡 API Endpoints
 
-### Health Check
-```bash
-GET /health
-```
+### Chat
+- `POST /chat` - Chat IA avec mémoire
+- `GET /health` - Health check
+- `GET /test` - Test route
 
-### YouTube Summarization
-```bash
-POST /summarize/youtube
-Content-Type: application/json
+### Summarization
+- `POST /summarize/pdf` - Résume un PDF
+- `POST /summarize/audio` - Transcrit et résume un audio
+- `POST /summarize/video` - Traite une vidéo complète
+- `POST /extract/book` - Extraction complète de livre
 
-{
-  "url": "https://www.youtube.com/watch?v=VIDEO_ID"
-}
-```
+## ☁️ Déploiement
 
-### Audio Summarization
-```bash
-POST /summarize/audio
-Content-Type: multipart/form-data
+### Render
 
-file: [audio_file.mp3]
-```
+1. Créer un nouveau service Web
+2. Connecter votre repo GitHub
+3. Configuration :
+   - **Runtime** : Node
+   - **Build Command** : `npm ci --only=production`
+   - **Start Command** : `node server.js`
+4. Variables d'environnement :
+   - `OPENAI_API_KEY` : Votre clé API OpenAI
+   - `NODE_ENV` : `production`
+   - `PORT` : `3001`
 
-### Video Summarization
-```bash
-POST /summarize/video
-Content-Type: multipart/form-data
-
-file: [video_file.mp4]
-```
-
-### PDF Summarization
-```bash
-POST /summarize/pdf
-Content-Type: multipart/form-data
-
-file: [document.pdf]
-```
-
-## 🧪 Tests
-
-### Test rapide du backend
-```bash
-npm test
-```
-
-### Test avec une vraie URL YouTube
-```bash
-node test-backend.js "https://www.youtube.com/watch?v=VIDEO_ID"
-```
-
-### Test manuel avec curl
-```bash
-# Health check
-curl http://localhost:3001/health
-
-# YouTube summarization
-curl -X POST http://localhost:3001/summarize/youtube \
-  -H "Content-Type: application/json" \
-  -d '{"url":"https://www.youtube.com/watch?v=VIDEO_ID"}'
-```
-
-## 🚀 Déploiement
-
-### Déploiement local
-```bash
-npm start
-```
-
-### Déploiement sur Fly.io
-```bash
-npm run deploy
-```
-
-## 📊 Performance
-
-- **YouTube Download**: ~5-15 secondes (selon la taille)
-- **Whisper Transcription**: ~2-5 secondes
-- **GPT Summarization**: ~1-3 secondes
-- **Total**: ~8-23 secondes pour une vidéo complète
-
-## 🔍 Debugging
-
-### Logs détaillés
-Le serveur affiche des logs détaillés pour chaque étape :
-- 🚀 Démarrage des processus
-- ✅ Succès des opérations
-- ❌ Erreurs détaillées
-- ⏱️ Temps de traitement
-
-### Vérification du proxy
-```bash
-# Test de la connectivité proxy
-curl --socks5 gw.dataimpulse.com:824 http://httpbin.org/ip
-```
-
-## 🛠️ Dépannage
-
-### Erreur "yt-dlp not found"
-```bash
-# Installer yt-dlp globalement
-pip install yt-dlp
-
-# Ou vérifier le PATH
-which yt-dlp
-```
-
-### Erreur "OpenAI API key invalid"
-```bash
-# Vérifier la clé API
-echo $OPENAI_API_KEY
-
-# Ou créer le fichier .env
-echo "OPENAI_API_KEY=sk-proj-your-key-here" > .env
-```
-
-### Erreur de proxy
-```bash
-# Vérifier la connectivité
-curl --socks5 gw.dataimpulse.com:824 http://httpbin.org/ip
-
-# Si le proxy ne fonctionne pas, modifier server.js
-```
-
-## 🔄 Mise à jour
+### Deta
 
 ```bash
-git pull origin main
-npm install
-npm start
+# Installer Deta CLI
+pip install deta
+
+# Déployer
+deta deploy
 ```
 
-## 📝 Changelog
+### Cyclic
 
-### v5.0.0
-- 🔄 Backend complètement refondu
-- ⚡ Optimisation ultra-rapide
-- 🎯 Intégration directe OpenAI + Whisper
-- 🔒 Proxy SOCKS5 configuré
-- 📊 Logs détaillés et métriques
+1. Connecter votre repo GitHub
+2. Cyclic détectera automatiquement Node.js
+3. Ajouter `OPENAI_API_KEY` dans les variables d'environnement
 
-## 🤝 Contribution
+## 📊 Optimisations
 
-1. Fork le projet
-2. Créer une branche feature
-3. Commit les changements
-4. Push vers la branche
-5. Ouvrir une Pull Request
+- **Mémoire** : Gestion optimisée des fichiers temporaires
+- **Performance** : Requêtes parallèles et cache intelligent
+- **Taille** : Image Docker minimale (< 200MB)
+- **Coût** : Utilise exclusivement GPT-4o mini (économique)
 
-## 📄 Licence
+## 📝 Structure
 
-MIT License - Voir le fichier LICENSE pour plus de détails.
+```
+omely-backend/
+├── server.js           # Serveur principal optimisé
+├── utils/
+│   ├── openaiService.js    # Service GPT-4o mini
+│   ├── transcribe.js       # Service Whisper
+│   ├── extractAudio.js     # Extraction audio vidéo
+│   └── extractPdfText.js   # Extraction texte PDF
+├── temp/               # Fichiers temporaires
+├── Dockerfile         # Image optimisée
+├── render.yaml        # Configuration Render
+└── package.json       # Dépendances minimales
+```
 
 ---
 
-**OMELY Backend Ultra-Rapide v5.0** - Transformez vos vidéos YouTube en résumés intelligents en quelques secondes ! 🚀
+**OMELY Backend v1.0** - Backend optimisé et prêt pour le déploiement léger ! ⚡

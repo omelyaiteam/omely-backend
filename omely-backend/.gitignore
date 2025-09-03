@@ -10,17 +10,15 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
-config.env
-deepseek-config.env
-openai-config.txt
+
+# Temporary files
+temp/
+*.tmp
+*.temp
 
 # Logs
 logs/
 *.log
-debug.log
-error.txt
-output.txt
-cookies.txt
 
 # Runtime data
 pids/
@@ -31,35 +29,11 @@ pids/
 # Coverage directory used by tools like istanbul
 coverage/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# nyc test coverage
+.nyc_output/
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Temporary files
-ultra_temp/
-temp/
-*.tmp
-
-# Build outputs
-dist/
-build/
-
-# Cache
-.cache/
-*.cache
-
-# Database
-*.db
-*.sqlite
-
-# Uploads (if any)
-uploads/
+# Dependency directories
+jspm_packages/
 
 # Optional npm cache directory
 .npm
@@ -72,3 +46,31 @@ uploads/
 
 # Yarn Integrity file
 .yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build outputs
+dist/
+build/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
