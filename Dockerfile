@@ -1,38 +1,36 @@
+# OMELY BACKEND - IMAGE OPTIMISÉE POUR DÉPLOIEMENT LÉGER
 FROM node:18-alpine
 
-# Install ffmpeg for video/audio processing
+# Installer FFmpeg et outils nécessaires
 RUN apk add --no-cache \
-    ffmpeg
+    ffmpeg \
+    curl \
+    && rm -rf /var/cache/apk/*
 
-# Set working directory
+# Créer répertoire de travail
 WORKDIR /app
 
-# Copy package files first
+# Copier et installer les dépendances
 COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
 
-# Install dependencies
-RUN npm install --omit=dev
+# Copier le code source
+COPY . .
 
-# Forcer l'installation d'axios explicitement
-RUN npm install axios --omit=dev
-RUN npm list axios
+# Créer les répertoires nécessaires
+RUN mkdir -p temp
 
-# Copy source files (utiliser le serveur chat)
-COPY server-chat.js ./
-COPY server.js ./
-COPY cookies.txt ./
-COPY utils/ ./utils/
-COPY services/ ./services/
-
-# Create storage and temp directories
-RUN mkdir -p storage ultra_temp
-
-# Expose port
-EXPOSE 3000
+# Variables d'environnement optimisées
+ENV NODE_ENV=production
+ENV PORT=3001
+ENV HOST=0.0.0.0
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3001/health || exit 1
 
-# Start the application
-CMD ["npm", "start"]
+# Exposer le port
+EXPOSE 3001
+
+# Démarrage optimisé
+CMD ["node", "server.js"]

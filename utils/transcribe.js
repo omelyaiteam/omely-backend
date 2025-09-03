@@ -1,50 +1,84 @@
+// SERVICE WHISPER OPTIMISÉ POUR LA TRANSCRIPTION AUDIO
 import { createReadStream } from 'fs';
 import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import OpenAI from 'openai';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY || 'your-openai-api-key-here',
+});
 
-let openai = null;
-try {
-  openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY || 'dummy-key-for-testing'
-  });
-} catch (error) {
-  console.warn('⚠️ OpenAI client not initialized (missing API key)');
+// Configuration optimisée
+const CONFIG = {
+  maxFileSize: 25 * 1024 * 1024, // 25MB max pour Whisper
+  supportedFormats: ['mp3', 'mp4', 'mpeg', 'mpga', 'm4a', 'wav', 'webm', 'flac'],
+  model: 'whisper-1',
+  responseFormat: 'text',
+  temperature: 0
+};
+
+/**
+ * Transcrit un fichier audio en texte utilisant OpenAI Whisper
+ * @param {string} audioFilePath - Chemin vers le fichier audio
+ * @returns {Promise<string>} - Le texte transcrit
+ */
+async function transcribe(audioFilePath) {
+  try {
+    // Vérifier que le fichier existe
+    const stats = await fs.stat(audioFilePath);
+    const fileSizeMB = stats.size / (1024 * 1024);
+
+    console.log(`🎵 Transcription avec Whisper: ${fileSizeMB.toFixed(2)}MB`);
+
+    // Vérifier la taille du fichier
+    if (stats.size > CONFIG.maxFileSize) {
+      throw new Error(`Fichier audio trop volumineux: ${fileSizeMB.toFixed(2)}MB (max: ${CONFIG.maxFileSize / (1024 * 1024)}MB)`);
+    }
+
+    // Vérifier l'extension du fichier
+    const extension = audioFilePath.split('.').pop()?.toLowerCase();
+    if (!CONFIG.supportedFormats.includes(extension)) {
+      throw new Error(`Format audio non supporté: ${extension}. Formats supportés: ${CONFIG.supportedFormats.join(', ')}`);
+    }
+
+    // Créer la transcription
+    const transcription = await openai.audio.transcriptions.create({
+      file: createReadStream(audioFilePath),
+      model: CONFIG.model,
+      response_format: CONFIG.responseFormat,
+      temperature: CONFIG.temperature,
+      language: 'fr' // Détection automatique de la langue française
+    });
+
+    console.log(`✅ Transcription terminée: ${transcription.length} caractères`);
+    return transcription.trim();
+
+  } catch (error) {
+    console.error('❌ Erreur transcription Whisper:', error);
+    throw new Error(`Échec de la transcription: ${error.message}`);
+  }
 }
 
 /**
- * Transcribes audio file using OpenAI Whisper (optimized for memory usage)
- * @param {string} audioFilePath - Path to the audio file (instead of buffer to save memory)
- * @returns {Promise<string>} - The transcribed text
+ * Test de connexion au service Whisper
+ * @returns {Promise<{success: boolean, message?: string, error?: string}>}
  */
-async function transcribe(audioFilePath) {
-  if (!openai) {
-    throw new Error('OpenAI client not initialized - missing API key');
+export async function testWhisperConnection() {
+  try {
+    // Test basique de l'API OpenAI
+    const response = await openai.models.list();
+    const hasWhisper = response.data.some(model => model.id === 'whisper-1');
+
+    return {
+      success: hasWhisper,
+      message: hasWhisper ? 'Whisper disponible' : 'Whisper non disponible'
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message
+    };
   }
-
-  // Vérifier que le fichier existe et obtenir sa taille
-  const stats = await fs.stat(audioFilePath);
-  console.log(`🎵 Transcription de ${(stats.size / (1024 * 1024)).toFixed(2)}MB avec Whisper...`);
-
-  // Limite de taille pour éviter les timeouts (20MB max pour Whisper)
-  const MAX_WHISPER_SIZE = 20 * 1024 * 1024; // 20MB
-  if (stats.size > MAX_WHISPER_SIZE) {
-    throw new Error(`Fichier audio trop volumineux pour Whisper: ${(stats.size / (1024 * 1024)).toFixed(2)}MB. Maximum: ${MAX_WHISPER_SIZE / (1024 * 1024)}MB. Conseil: compressez le fichier ou utilisez un extrait plus court.`);
-  }
-
-  const transcription = await openai.audio.transcriptions.create({
-    file: createReadStream(audioFilePath),
-    model: 'whisper-1',
-    response_format: 'text',
-    temperature: 0
-  });
-
-  console.log(`✅ Transcription terminée (${transcription.length} caractères)`);
-  return transcription;
 }
 
+console.log('✅ Service Whisper optimisé chargé !');
 export default transcribe;

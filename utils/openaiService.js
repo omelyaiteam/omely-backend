@@ -1,44 +1,29 @@
-// SERVICE ULTRA-RAPIDE OPENAI GPT-4O MINI - REMPLACE DEEPSEEK
+// SERVICE OPENAI GPT-4O MINI OPTIMISÉ
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || 'your-openai-api-key-here',
 });
 
-// Cache pour les réponses similaires
+// Cache simple pour éviter les répétitions
 const responseCache = new Map();
-const CACHE_TTL = 30000; // 30 secondes
+const CACHE_TTL = 60000; // 1 minute
 
 export async function createChatCompletion(messages, options = {}) {
-  // Cache ultra-rapide
-  const cacheKey = JSON.stringify({ messages: messages.slice(-1), options });
-  const cached = responseCache.get(cacheKey);
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    console.log('⚡ CACHE HIT - réponse instantanée !');
-    return cached.response;
-  }
-
   try {
     console.log(`🚀 OpenAI GPT-4o-mini: ${messages.length} messages`);
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini', // LE PLUS RAPIDE ET ÉCONOMIQUE
+      model: 'gpt-4o-mini',
       messages: messages,
-      temperature: 0.7,
-      max_tokens: options.max_tokens || 150,
+      temperature: options.temperature || 0.7,
+      max_tokens: options.max_tokens || 1000,
       top_p: 0.9,
-      stream: false, // Désactivé pour simplicité et rapidité
     });
 
     const response = completion.choices[0]?.message?.content || '';
-
-    // Cache la réponse
-    responseCache.set(cacheKey, {
-      response: response,
-      timestamp: Date.now()
-    });
-
     console.log(`✅ OpenAI réponse: ${response.length} caractères`);
+
     return response;
 
   } catch (error) {
@@ -47,52 +32,81 @@ export async function createChatCompletion(messages, options = {}) {
   }
 }
 
-// Fonctions de compatibilité pour remplacer DeepSeek
-export async function summarizeText(text, type = 'general') {
+// Fonction de résumé optimisée
+export async function summarizeText(text, type = 'general', options = {}) {
+  const maxLength = options.maxLength || 2000;
+
+  let prompt = '';
+  switch (type) {
+    case 'pdf':
+    case 'book':
+      prompt = `Tu es un expert en analyse de documents. Analyse ce texte et fournis un résumé complet et structuré qui capture tous les points importants. Structure le résumé avec des sections claires.`;
+      break;
+    case 'audio':
+      prompt = `Tu es un expert en analyse de contenu audio. Analyse cette transcription et fournis un résumé structuré qui capture les idées principales.`;
+      break;
+    case 'video':
+      prompt = `Tu es un expert en analyse de contenu vidéo. Analyse cette transcription et fournis un résumé structuré qui capture les idées principales.`;
+      break;
+    default:
+      prompt = `Résume ce texte de manière claire et concise.`;
+  }
+
   const messages = [
-    {
-      role: 'system',
-      content: 'Tu es un assistant qui résume des textes de manière claire et concise.'
-    },
-    {
-      role: 'user',
-      content: `Résume ce texte: ${text}`
-    }
+    { role: 'system', content: prompt },
+    { role: 'user', content: text.substring(0, maxLength) }
   ];
 
-  return await createChatCompletion(messages, { max_tokens: 200 });
+  return await createChatCompletion(messages, { max_tokens: 1500 });
 }
 
+// Fonction d'extraction complète pour livres
 export async function extractCompleteBookContent(text, title = 'Livre') {
+  const prompt = `Tu es un expert en analyse de livres. Analyse ce livre intitulé "${title}" et fournis un résumé PROFESSIONNEL complet qui capture 100% de la valeur du livre.
+
+INSTRUCTIONS OBLIGATOIRES:
+- Extrais TOUS les concepts, principes et stratégies importants
+- Ne laisse AUCUN point clé de côté
+- Organise par sections thématiques claires
+- Inclus les exemples concrets et cas pratiques
+- Mentionne les techniques spécifiques et méthodes
+- Sois exhaustif - ne limite pas le contenu
+
+FORMAT STRUCTURE:
+## 🔑 PRINCIPES CLÉS
+## 💰 STRATÉGIES FINANCIÈRES
+## ⚡ MENTALITÉS RICHES vs PAUVRES
+## 🎯 PLAN D'ACTION
+## 💬 CITATIONS INSPIRANTES
+
+RÉSUMÉ COMPLET:`;
+
   const messages = [
-    {
-      role: 'system',
-      content: `Tu es un expert en analyse de livres. Analyse ce livre intitulé "${title}" et fournis un résumé complet et structuré.`
-    },
-    {
-      role: 'user',
-      content: text
-    }
+    { role: 'system', content: prompt },
+    { role: 'user', content: text.substring(0, 10000) }
   ];
 
-  return await createChatCompletion(messages, { max_tokens: 1000 });
+  const summary = await createChatCompletion(messages, { max_tokens: 2000 });
+
+  return {
+    success: true,
+    completeSummary: summary,
+    metadata: {
+      title,
+      originalTextLength: text.length,
+      processingTime: Date.now(),
+      provider: 'GPT-4o mini'
+    }
+  };
 }
 
-// Fonctions utilitaires
-export function getDeepSeekQueueStatus() {
-  return { queueLength: 0, activeRequests: 0, recentRequests: 0 };
-}
-
-export function clearDeepSeekQueue() {
-  console.log('🔄 Queue OpenAI vidée');
-}
-
-export async function testDeepSeekConnection() {
+// Test de connexion
+export async function testConnection() {
   try {
     const response = await createChatCompletion([{
       role: 'user',
-      content: 'Dis simplement "OpenAI fonctionne"'
-    }], { max_tokens: 20 });
+      content: 'Réponds simplement "OK"'
+    }], { max_tokens: 10 });
 
     return { success: true, message: response };
   } catch (error) {
@@ -100,23 +114,14 @@ export async function testDeepSeekConnection() {
   }
 }
 
-export async function verifyDeepSeekModelUsage() {
+// Configuration
+export function getConfig() {
   return {
-    success: true,
-    requestedModel: 'gpt-4o-mini',
-    actualModel: 'gpt-4o-mini',
+    model: 'gpt-4o-mini',
+    provider: 'OpenAI',
+    hasApiKey: !!(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your-openai-api-key-here'),
     baseURL: 'https://api.openai.com/v1'
   };
 }
 
-export function getDeepSeekConfig() {
-  return {
-    model: 'gpt-4o-mini',
-    baseURL: 'https://api.openai.com/v1',
-    expectedModel: 'gpt-4o-mini',
-    verifyModel: true,
-    hasApiKey: !!(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your-openai-api-key-here')
-  };
-}
-
-console.log('✅ Service OpenAI GPT-4o-mini activé - Rapidité maximale !');
+console.log('✅ Service OpenAI GPT-4o-mini optimisé !');
