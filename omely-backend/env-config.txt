@@ -1,0 +1,7 @@
+# Configuration OpenAI - COPIEZ CES LIGNES DANS VOTRE .env
+OPENAI_API_KEY=your-openai-api-key-here
+
+# Instructions :
+# 1. Créez un fichier .env dans le dossier omely-backend/
+# 2. Copiez la ligne OPENAI_API_KEY ci-dessus
+# 3. Remplacez 'your-openai-api-key-here' par votre vraie clé OpenAI

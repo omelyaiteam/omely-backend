@@ -1,0 +1,16 @@
+
+[2025-09-02T10:16:38.731Z] PAYLOAD: {
+  "model": "deepseek-chat",
+  "temperature": 0.7,
+  "max_tokens": 50,
+  "top_p": 0.9,
+  "frequency_penalty": 0,
+  "presence_penalty": 0,
+  "stream": true,
+  "messages": [
+    {
+      "role": "user",
+      "content": "test"
+    }
+  ]
+}

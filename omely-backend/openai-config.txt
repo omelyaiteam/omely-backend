@@ -1,0 +1,14 @@
+# Configuration OpenAI pour rapidité maximale
+# Remplacez cette clé par votre clé OpenAI API
+OPENAI_API_KEY=sk-votre-cle-openai-ici
+
+# Pour obtenir une clé API OpenAI :
+# 1. Allez sur https://platform.openai.com/
+# 2. Créez un compte ou connectez-vous
+# 3. Allez dans API Keys
+# 4. Créez une nouvelle clé
+# 5. Copiez-la et remplacez la valeur ci-dessus
+
+# GPT-4o-mini est le modèle le plus rapide et économique
+# Temps de réponse typique : 0.5-1 seconde
+# Coût : ~0.15$ pour 1M tokens
